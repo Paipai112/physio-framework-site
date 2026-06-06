@@ -69,7 +69,7 @@ function LayerBentoCard({
           <span className="font-heading text-2xl font-bold text-text-primary">
             {layerId}
           </span>
-          <span className="text-sm font-medium text-text-muted">
+          <span className="text-sm font-medium text-text-secondary">
             {layerName}
           </span>
         </div>
@@ -96,7 +96,7 @@ function LayerBentoCard({
             {layerModules.slice(0, 3).map((mod) => (
               <span
                 key={mod.id}
-                className="inline-block rounded-full border px-2.5 py-0.5 text-[11px] font-medium"
+                className="inline-block rounded-full border px-2.5 py-0.5 text-xs font-medium"
                 style={{
                   borderColor: hex + "30",
                   color: hex,
@@ -107,7 +107,7 @@ function LayerBentoCard({
               </span>
             ))}
             {layerModules.length > 3 && (
-              <span className="inline-block rounded-full border border-border-default px-2.5 py-0.5 text-[11px] font-medium text-text-muted">
+              <span className="inline-block rounded-full border border-border-default px-2.5 py-0.5 text-xs font-medium text-text-muted">
                 +{layerModules.length - 3}
               </span>
             )}
@@ -166,7 +166,7 @@ export default function HomePage() {
         {/* Gradient accent line */}
         <div className="mx-auto my-8 h-[3px] w-[60px] rounded-full bg-gradient-to-r from-layer-1 via-layer-2 via-layer-3 via-layer-4 to-layer-5" />
 
-        <p className="mx-auto max-w-2xl text-lg leading-relaxed text-text-secondary">
+        <p className="mx-auto max-w-2xl text-lg leading-relaxed text-text-body">
           从传感器到临床应用，构建完整的技术栈知识体系。
           涵盖信号采集、预处理、特征提取、模式识别与临床决策支持。
         </p>

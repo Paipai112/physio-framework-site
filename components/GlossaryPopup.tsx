@@ -83,7 +83,7 @@ export default function GlossaryPopup({ termId, children }: Props) {
             <span className="font-heading font-semibold text-text-primary text-sm">
               {term.term}
             </span>
-            <span className="rounded-full bg-white/5 text-text-muted text-[11px] px-2 py-0.5 ml-2">
+            <span className="rounded-full bg-white/5 text-text-muted text-xs px-2 py-0.5 ml-2">
               {term.category}
             </span>
           </div>

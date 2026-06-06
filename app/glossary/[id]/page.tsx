@@ -75,7 +75,7 @@ export default function GlossaryDetailPage({ params }: Props) {
         <h2 className="font-heading text-lg font-semibold text-text-primary mb-3">
           定义
         </h2>
-        <p className="text-text-secondary leading-relaxed text-[15px]">
+        <p className="text-text-body leading-relaxed text-[15px]">
           {term.definition}
         </p>
       </div>
@@ -104,7 +104,7 @@ export default function GlossaryDetailPage({ params }: Props) {
                   <h3 className="font-medium text-text-primary group-hover:text-blue-400 transition-colors">
                     {mod.name}
                   </h3>
-                  <p className="mt-1.5 text-sm text-text-muted leading-relaxed line-clamp-2">
+                  <p className="mt-1.5 text-sm text-text-secondary leading-relaxed line-clamp-2">
                     {mod.summary}
                   </p>
                   <span

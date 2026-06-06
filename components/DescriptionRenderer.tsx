@@ -46,7 +46,7 @@ export default function DescriptionRenderer({
   );
 
   return (
-    <div className="space-y-5 text-text-secondary leading-relaxed max-w-prose text-[15px]">
+    <div className="space-y-5 text-text-body leading-relaxed max-w-prose text-[15px]">
       {paragraphs.map((p, i) => {
         // First, split by citation markers
         const citeSegments = p.split(CITATION_RE);

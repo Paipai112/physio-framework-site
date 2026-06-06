@@ -91,7 +91,7 @@ export default function ImplementationTabs({ implementations }: Props) {
             {active.name}
           </h3>
           <span
-            className={`rounded-full px-2.5 py-0.5 text-[11px] font-medium border ${
+            className={`rounded-full px-2.5 py-0.5 text-xs font-medium border ${
               active.type === "mainstream"
                 ? "bg-blue-500/10 text-blue-400 border-blue-500/20"
                 : "bg-violet-500/10 text-violet-400 border-violet-500/20"
@@ -102,12 +102,12 @@ export default function ImplementationTabs({ implementations }: Props) {
         </div>
 
         {/* Vendor */}
-        <p className="text-text-muted text-sm mb-3">
+        <p className="text-text-secondary text-sm mb-3">
           提供方: {active.vendor}
         </p>
 
         {/* Description */}
-        <p className="text-text-secondary mb-5 leading-relaxed">
+        <p className="text-text-body mb-5 leading-relaxed">
           {active.description}
         </p>
 

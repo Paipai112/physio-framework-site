@@ -55,9 +55,8 @@ export default function LayerDetailPage({ params }: Props) {
 
       {/* Layer header card */}
       <div className="rounded-2xl border border-border-subtle bg-surface-elevated p-8">
-        <div className="mb-4 text-5xl">{layer.icon}</div>
         <h1 className="font-heading text-3xl font-bold text-text-primary">{layer.name}</h1>
-        <p className="mt-3 max-w-3xl text-lg text-text-secondary">
+        <p className="mt-3 max-w-3xl text-lg text-text-body">
           {layer.description}
         </p>
         <div className="mt-5 flex items-center gap-3">

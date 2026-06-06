@@ -38,7 +38,7 @@ function ReferenceCard({ reference: r }: { reference: Reference }) {
           <span className="font-medium text-text-primary">{r.title}</span>
 
           {(r.authors || r.year) && (
-            <p className="mt-1 text-sm text-text-muted">
+            <p className="mt-1 text-sm text-text-secondary">
               {r.authors && <span>{r.authors}</span>}
               {r.authors && r.year && <span> &middot; </span>}
               {r.year && <span>{r.year}</span>}
@@ -74,7 +74,7 @@ function ReferenceCard({ reference: r }: { reference: Reference }) {
           )}
         </div>
 
-        <span className="shrink-0 rounded-full bg-white/5 text-text-muted text-[11px] px-2 py-0.5 border border-white/5">
+        <span className="shrink-0 rounded-full bg-white/5 text-text-muted text-xs px-2 py-0.5 border border-white/5">
           {TYPE_LABELS[r.type]}
         </span>
       </div>

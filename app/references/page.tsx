@@ -26,7 +26,7 @@ function ReferenceCard({ reference: r }: { reference: Reference }) {
       <div className="mt-1.5 flex flex-wrap items-center gap-x-3 text-sm text-text-muted">
         {r.authors && <span>{r.authors}</span>}
         {r.year && <span>{r.year}</span>}
-        <span className="rounded-full bg-white/5 text-text-muted text-[11px] px-2 py-0.5">
+        <span className="rounded-full bg-white/5 text-text-muted text-xs px-2 py-0.5">
           {typeLabel}
         </span>
       </div>
@@ -70,7 +70,7 @@ export default function ReferencesPage() {
         <h1 className="font-heading text-3xl font-bold text-text-primary mb-2">
           参考文献总汇
         </h1>
-        <p className="text-text-secondary mb-8">
+        <p className="text-text-body mb-8">
           共 {references.length} 篇文献，覆盖传感器技术、信号处理算法、临床应用等多个领域
         </p>
 

@@ -22,6 +22,7 @@
 | Border Subtle | `#1F1F1F` | — | Card borders |
 | Border Default | `#2A2A2A` | `zinc-800` | Section dividers |
 | Text Primary | `#FAFAFA` | `zinc-50` | Headings, body |
+| Text Body | `#D4D4D4` | `text-body` | Article body, descriptions |
 | Text Secondary | `#A3A3A3` | `zinc-400` | Descriptions, meta |
 | Text Muted | `#737373` | `zinc-500` | Captions, footnotes |
 
@@ -69,16 +70,25 @@ fontFamily: {
 ```
 
 **Type Scale:**
-| Token | Size | Line Height | Weight | Usage |
-|-------|------|-------------|--------|-------|
-| `text-hero` | `clamp(3rem, 8vw, 6rem)` | 1.0 | 700 | Hero headlines |
-| `text-display` | `clamp(2rem, 5vw, 3.5rem)` | 1.1 | 600 | Section titles |
-| `text-heading-1` | `2rem / 32px` | 1.2 | 600 | Page titles |
-| `text-heading-2` | `1.5rem / 24px` | 1.3 | 600 | Card titles |
-| `text-heading-3` | `1.25rem / 20px` | 1.4 | 500 | Subheadings |
-| `text-body` | `1rem / 16px` | 1.75 | 400 | Body text |
-| `text-body-sm` | `0.875rem / 14px` | 1.6 | 400 | Secondary text |
-| `text-caption` | `0.75rem / 12px` | 1.5 | 400 | Captions, meta |
+| Token | Size | Line Height | Weight | Color | Usage |
+|-------|------|-------------|--------|-------|-------|
+| `text-hero` | `clamp(3rem, 8vw, 6rem)` | 1.0 | 700 | `text-primary` | Hero headlines |
+| `text-display` | `clamp(2rem, 5vw, 3.5rem)` | 1.1 | 600 | `text-primary` | Section titles |
+| `text-heading-1` | `2rem / 32px` | 1.2 | 600 | `text-primary` | Page titles |
+| `text-heading-2` | `1.5rem / 24px` | 1.3 | 600 | `text-primary` | Card titles |
+| `text-heading-3` | `1.25rem / 20px` | 1.4 | 500 | `text-primary` | Subheadings |
+| `text-body` | `1rem / 16px` | 1.75 | 400 | `text-body` (#D4D4D4) | Body text |
+| `text-body-sm` | `0.9375rem / 15px` | 1.6 | 400 | `text-body` | Secondary text |
+| `text-caption` | `0.8125rem / 13px` | 1.5 | 400 | `text-secondary` | Captions, meta |
+
+---
+
+**Text Color Usage Rules:**
+
+- `text-primary` (#FAFAFA): Headings, card titles, emphasized values
+- `text-body` (#D4D4D4): Body text, article content, descriptions, list items
+- `text-secondary` (#A3A3A3): Secondary descriptions, card summaries, meta text
+- `text-muted` (#737373): Captions ONLY — never for body text
 
 ---
 
@@ -168,6 +178,7 @@ fontFamily: {
 - No missing cursor-pointer on interactive elements
 - No hardcoded colors — use Tailwind tokens or CSS variables
 - No `<img>` without alt text
+- No `text-[11px]` — minimum text size is `text-xs` (12px, 0.75rem)
 
 ---
 

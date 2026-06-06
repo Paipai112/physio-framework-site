@@ -15,6 +15,7 @@ import DependencyGraph from "@/components/DependencyGraph";
 import ImplementationTabs from "@/components/ImplementationTabs";
 import ReferenceList from "@/components/ReferenceList";
 import DescriptionRenderer from "@/components/DescriptionRenderer";
+import { getLayerHex } from "@/data/colors";
 
 interface Props {
   params: { id: string };
@@ -70,6 +71,7 @@ export default function ModuleDetailPage({ params }: Props) {
 
   const impClass = importanceColors[mod.importance] ?? importanceColors.low;
   const descParagraphs = mod.description.split("\n\n").filter(Boolean);
+  const layerHex = getLayerHex(mod.layer);
 
   // Prev/next navigation
   const allModules = modules;
@@ -114,7 +116,7 @@ export default function ModuleDetailPage({ params }: Props) {
             {mod.layer}
           </span>
         </div>
-        <p className="text-lg text-text-secondary">{mod.summary}</p>
+        <p className="text-lg text-text-body">{mod.summary}</p>
       </div>
 
       {/* Tags */}
@@ -122,7 +124,7 @@ export default function ModuleDetailPage({ params }: Props) {
         {mod.tags.map((tag) => (
           <span
             key={tag}
-            className="rounded-full border border-white/5 bg-white/5 px-3 py-1 text-sm text-text-secondary"
+            className="rounded-full border border-white/5 bg-white/[0.06] px-3 py-1 text-sm text-text-body"
           >
             #{tag}
           </span>
@@ -130,8 +132,11 @@ export default function ModuleDetailPage({ params }: Props) {
       </div>
 
       {/* Description */}
-      <section className="rounded-2xl border border-border-subtle bg-surface-elevated p-6">
-        <h2 className="mb-4 font-heading text-lg font-semibold text-text-primary">
+      <section
+        className="rounded-2xl border border-border-subtle bg-surface-elevated border-l-2 p-6 pl-5"
+        style={{ borderLeftColor: layerHex }}
+      >
+        <h2 className="mb-4 font-heading text-xl font-semibold text-text-primary">
           概述
         </h2>
         <DescriptionRenderer paragraphs={descParagraphs} />
@@ -140,7 +145,7 @@ export default function ModuleDetailPage({ params }: Props) {
       {/* Dependency Graph */}
       {graphNodes.length > 1 && (
         <section className="rounded-2xl border border-border-subtle bg-surface-elevated p-6">
-          <h2 className="mb-4 font-heading text-lg font-semibold text-text-primary">
+          <h2 className="mb-4 font-heading text-xl font-semibold text-text-primary">
             依赖关系图
           </h2>
           <DependencyGraph
@@ -149,7 +154,7 @@ export default function ModuleDetailPage({ params }: Props) {
             width={700}
             height={350}
           />
-          <p className="mt-3 text-xs text-text-muted">
+          <p className="mt-3 text-xs text-text-secondary">
             滚轮缩放 · 拖拽平移 · 悬停查看 · 点击跳转详情 · 颜色按层级区分
           </p>
         </section>
@@ -158,8 +163,11 @@ export default function ModuleDetailPage({ params }: Props) {
       {/* Dependencies & Feeds Into */}
       <div className="grid gap-6 sm:grid-cols-2">
         {depModules.length > 0 && (
-          <section className="rounded-2xl border border-border-subtle bg-surface-elevated p-6">
-            <h2 className="mb-3 font-heading text-base font-semibold text-text-primary">
+          <section
+            className="rounded-2xl border border-border-subtle bg-surface-elevated border-l-2 p-6 pl-4"
+            style={{ borderLeftColor: layerHex }}
+          >
+            <h2 className="mb-3 font-heading text-lg font-semibold text-text-primary">
               依赖（下级输入）
             </h2>
             <ul className="space-y-2">
@@ -171,7 +179,7 @@ export default function ModuleDetailPage({ params }: Props) {
                   >
                     {dep.name}
                   </Link>
-                  <span className="ml-2 text-xs text-text-muted">
+                  <span className="ml-2 text-xs text-text-secondary">
                     {dep.summary.slice(0, 60)}...
                   </span>
                 </li>
@@ -180,8 +188,11 @@ export default function ModuleDetailPage({ params }: Props) {
           </section>
         )}
         {feedModules.length > 0 && (
-          <section className="rounded-2xl border border-border-subtle bg-surface-elevated p-6">
-            <h2 className="mb-3 font-heading text-base font-semibold text-text-primary">
+          <section
+            className="rounded-2xl border border-border-subtle bg-surface-elevated border-l-2 p-6 pl-4"
+            style={{ borderLeftColor: layerHex }}
+          >
+            <h2 className="mb-3 font-heading text-lg font-semibold text-text-primary">
               供给（上级输出）
             </h2>
             <ul className="space-y-2">
@@ -193,7 +204,7 @@ export default function ModuleDetailPage({ params }: Props) {
                   >
                     {feed.name}
                   </Link>
-                  <span className="ml-2 text-xs text-text-muted">
+                  <span className="ml-2 text-xs text-text-secondary">
                     {feed.summary.slice(0, 60)}...
                   </span>
                 </li>
@@ -204,7 +215,7 @@ export default function ModuleDetailPage({ params }: Props) {
       </div>
 
       {/* Implementations */}
-      <section>
+      <section className="rounded-2xl border border-border-subtle bg-surface-elevated p-6">
         <h2 className="mb-4 font-heading text-xl font-semibold text-text-primary">
           实现方案
         </h2>
@@ -213,7 +224,7 @@ export default function ModuleDetailPage({ params }: Props) {
 
       {/* Glossary Terms */}
       {terms.length > 0 && (
-        <section>
+        <section className="rounded-2xl border border-border-subtle bg-surface-elevated p-6">
           <h2 className="mb-4 font-heading text-xl font-semibold text-text-primary">
             相关术语
           </h2>
@@ -228,7 +239,7 @@ export default function ModuleDetailPage({ params }: Props) {
                   <span className="font-medium text-blue-400">
                     {term.term}
                   </span>
-                  <span className="rounded-full bg-white/5 px-2 py-0.5 text-[11px] text-text-muted">
+                  <span className="rounded-full bg-white/5 px-2 py-0.5 text-xs text-text-muted">
                     {term.category}
                   </span>
                 </div>
@@ -250,7 +261,7 @@ export default function ModuleDetailPage({ params }: Props) {
 
       {/* Related Modules */}
       {sameLayerModules.length > 0 && (
-        <section>
+        <section className="rounded-2xl border border-border-subtle bg-surface-elevated p-6">
           <h2 className="mb-4 font-heading text-xl font-semibold text-text-primary">
             同层相关模块
           </h2>
@@ -261,10 +272,10 @@ export default function ModuleDetailPage({ params }: Props) {
                 href={`/module/${rel.id}`}
                 className="rounded-xl border border-border-subtle bg-surface-elevated p-4 transition-all duration-200 hover:border-white/10 hover:bg-surface-highlight"
               >
-                <div className="text-sm font-medium text-text-primary">
+                <div className="text-sm font-semibold text-text-primary">
                   {rel.name}
                 </div>
-                <div className="mt-1 line-clamp-1 text-xs text-text-muted">
+                <div className="mt-1 line-clamp-1 text-xs text-text-secondary">
                   {rel.summary}
                 </div>
               </Link>

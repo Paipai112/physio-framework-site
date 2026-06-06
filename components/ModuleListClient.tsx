@@ -45,7 +45,7 @@ export default function ModuleListClient({ modules }: Props) {
         <h1 className="font-heading text-3xl font-bold text-text-primary mb-2">
           全部模块
         </h1>
-        <p className="text-text-secondary">
+        <p className="text-text-body">
           共 {totalActive} 个模块，涵盖传感器、信号处理、特征提取、模式识别与临床决策支持
         </p>
       </div>
@@ -80,7 +80,7 @@ export default function ModuleListClient({ modules }: Props) {
               }
               className={chipClass(layer.id, isActive)}
             >
-              {layer.icon} {layer.name}
+              {layer.name}
             </button>
           );
         })}
@@ -94,7 +94,7 @@ export default function ModuleListClient({ modules }: Props) {
           <section key={layer.id}>
             <div className="flex items-baseline gap-3 mb-5">
               <h2 className="font-heading text-xl font-semibold text-text-primary">
-                {layer.icon} {layer.name}
+                {layer.name}
               </h2>
               <span className="text-sm text-text-muted">
                 {layerModules.length} 个模块
