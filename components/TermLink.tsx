@@ -15,7 +15,7 @@ export default function TermLink({ termId, display }: Props) {
   return (
     <Link
       href={`/glossary/${termId}`}
-      className="border-b border-dashed border-primary-500/50 text-primary-400 transition-colors hover:border-primary-400 hover:text-primary-300"
+      className="rounded-lg text-blue-400 hover:text-blue-300 transition-colors duration-200 border-b border-dashed border-blue-400/50 cursor-help"
       title={term.definition}
     >
       {display ?? term.term}

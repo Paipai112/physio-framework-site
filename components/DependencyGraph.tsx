@@ -21,6 +21,15 @@ interface Props {
   height?: number;
 }
 
+function hexToRGB(hex: string): { r: number; g: number; b: number } {
+  const clean = hex.replace("#", "");
+  return {
+    r: parseInt(clean.substring(0, 2), 16),
+    g: parseInt(clean.substring(2, 4), 16),
+    b: parseInt(clean.substring(4, 6), 16),
+  };
+}
+
 export default function DependencyGraph({
   nodes,
   edges,
@@ -62,6 +71,16 @@ export default function DependencyGraph({
     return result;
   }, [nodes, width, height]);
 
+  const getEdgeColor = useCallback(
+    (isActive: boolean) => (isActive ? "#60A5FA" : "#2A2A2A"),
+    [],
+  );
+
+  const getNodeLabelColor = useCallback(
+    (isHovered: boolean) => (isHovered ? "#FAFAFA" : "#A3A3A3"),
+    [],
+  );
+
   const handleWheel = useCallback(
     (e: React.WheelEvent) => {
       e.preventDefault();
@@ -77,7 +96,7 @@ export default function DependencyGraph({
         h: clampedH,
       }));
     },
-    [viewBox, width, height]
+    [viewBox, width, height],
   );
 
   const handleMouseDown = useCallback(
@@ -87,7 +106,7 @@ export default function DependencyGraph({
         setPanStart({ x: e.clientX - viewBox.x, y: e.clientY - viewBox.y });
       }
     },
-    [viewBox]
+    [viewBox],
   );
 
   const handleMouseMove = useCallback(
@@ -99,22 +118,24 @@ export default function DependencyGraph({
         y: e.clientY - panStart.y,
       }));
     },
-    [isPanning, panStart]
+    [isPanning, panStart],
   );
 
   const handleMouseUp = useCallback(() => setIsPanning(false), []);
 
   const resetZoom = useCallback(
     () => setViewBox({ x: 0, y: 0, w: width, h: height }),
-    [width, height]
+    [width, height],
   );
 
+  const isZoomed = viewBox.w !== width;
+
   return (
-    <div className="relative">
+    <div className="relative w-full">
       <svg
         width={width}
         height={height}
-        className="w-full rounded-lg border border-slate-700/50 bg-slate-800/20"
+        className="w-full rounded-2xl border border-border-subtle bg-surface-elevated"
         viewBox={`${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}`}
         onWheel={handleWheel}
         onMouseDown={handleMouseDown}
@@ -123,6 +144,15 @@ export default function DependencyGraph({
         onMouseLeave={handleMouseUp}
         style={{ cursor: isPanning ? "grabbing" : "grab" }}
       >
+        <defs>
+          <filter id="edge-glow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="2" />
+          </filter>
+          <filter id="node-shadow" x="-50%" y="-50%" width="200%" height="200%">
+            <feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="#FFFFFF" floodOpacity="0.25" />
+          </filter>
+        </defs>
+
         {/* Edges */}
         {edges.map((edge, i) => {
           const source = positions[edge.source];
@@ -137,8 +167,9 @@ export default function DependencyGraph({
               y1={source.y}
               x2={target.x}
               y2={target.y}
-              stroke={isActive ? "#60a5fa" : "#334155"}
+              stroke={getEdgeColor(isActive)}
               strokeWidth={isActive ? 2 : 1}
+              filter={isActive ? "url(#edge-glow)" : undefined}
               className="transition-all duration-300"
             />
           );
@@ -149,9 +180,11 @@ export default function DependencyGraph({
           const pos = positions[node.id];
           if (!pos) return null;
           const color = LAYER_COLORS[node.layer] || LAYER_COLOR_FALLBACK;
+          const { r, g, b } = hexToRGB(color);
           const labelLen = node.label.length;
           const labelWidth = Math.min(labelLen * 7 + 16, 140);
           const labelHeight = 22;
+          const isHovered = hoveredNode === node.id;
 
           return (
             <g key={node.id}>
@@ -159,10 +192,11 @@ export default function DependencyGraph({
                 <circle
                   cx={pos.x}
                   cy={pos.y}
-                  r={7}
+                  r={8}
                   fill={color}
-                  stroke={hoveredNode === node.id ? "#fff" : "none"}
-                  strokeWidth={hoveredNode === node.id ? 2 : 0}
+                  stroke={isHovered ? "#FFFFFF" : "none"}
+                  strokeWidth={isHovered ? 2.5 : 0}
+                  filter={isHovered ? "url(#node-shadow)" : undefined}
                   className="cursor-pointer transition-all duration-200"
                   onMouseEnter={() => setHoveredNode(node.id)}
                   onMouseLeave={() => setHoveredNode(null)}
@@ -172,9 +206,9 @@ export default function DependencyGraph({
                   y={pos.y - labelHeight - 10}
                   width={labelWidth}
                   height={labelHeight}
-                  rx={4}
-                  fill={color + "30"}
-                  stroke={color + "80"}
+                  rx={8}
+                  fill="#1A1A1A"
+                  stroke={`rgba(${r}, ${g}, ${b}, 0.5)`}
                   strokeWidth={1}
                   className="transition-all duration-200"
                 />
@@ -183,9 +217,10 @@ export default function DependencyGraph({
                   y={pos.y - labelHeight / 2 - 10 + 1}
                   textAnchor="middle"
                   dominantBaseline="middle"
-                  fill={hoveredNode === node.id ? "#fff" : "#e2e8f0"}
+                  fill={getNodeLabelColor(isHovered)}
                   fontSize="11"
-                  className="pointer-events-none"
+                  fontFamily="DM Sans, Noto Sans SC, sans-serif"
+                  className="pointer-events-none transition-all duration-200"
                 >
                   {node.label}
                 </text>
@@ -195,10 +230,10 @@ export default function DependencyGraph({
         })}
       </svg>
 
-      {viewBox.w !== width && (
+      {isZoomed && (
         <button
           onClick={resetZoom}
-          className="absolute right-2 top-2 rounded bg-slate-700/80 px-2 py-1 text-xs text-slate-300 hover:bg-slate-600 transition-colors"
+          className="absolute top-3 right-3 rounded-xl bg-surface-highlight/90 backdrop-blur-sm border border-border-subtle px-3 py-1.5 text-xs text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-all duration-200"
         >
           重置
         </button>

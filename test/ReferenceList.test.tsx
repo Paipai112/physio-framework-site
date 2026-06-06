@@ -37,10 +37,11 @@ describe("ReferenceList", () => {
     expect(screen.getByText("引用文献")).toBeInTheDocument();
   });
 
-  it("renders reference IDs", () => {
+  it("renders article titles", () => {
     render(<ReferenceList references={mockRefs} />);
-    expect(screen.getByText(/ref-allen2007/)).toBeInTheDocument();
-    expect(screen.getByText(/ref-max30102/)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Photoplethysmography and its application/)
+    ).toBeInTheDocument();
   });
 
   it("renders authors", () => {
@@ -48,11 +49,9 @@ describe("ReferenceList", () => {
     expect(screen.getByText(/Allen J/)).toBeInTheDocument();
   });
 
-  it("renders article titles", () => {
+  it("renders zhSummary for references that have it", () => {
     render(<ReferenceList references={mockRefs} />);
-    expect(
-      screen.getByText(/Photoplethysmography and its application/)
-    ).toBeInTheDocument();
+    expect(screen.getByText("PPG光电容积描记技术综述")).toBeInTheDocument();
   });
 
   it("returns null for empty references", () => {

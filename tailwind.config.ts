@@ -10,62 +10,77 @@ const config: Config = {
     extend: {
       colors: {
         surface: {
-          DEFAULT: "#ffffff",
-          dark: "#0f172a",
+          DEFAULT: "#0A0A0A",
+          elevated: "#121212",
+          highlight: "#1A1A1A",
+          hover: "#242424",
         },
-        primary: {
-          50: "#eff6ff",
-          100: "#dbeafe",
-          200: "#bfdbfe",
-          300: "#93c5fd",
-          400: "#60a5fa",
-          500: "#3b82f6",
-          600: "#2563eb",
-          700: "#1d4ed8",
-          800: "#1e40af",
-          900: "#1e3a8a",
+        border: {
+          subtle: "#1F1F1F",
+          DEFAULT: "#2A2A2A",
+          strong: "#333333",
         },
-        accent: {
-          50: "#f0fdf4",
-          100: "#dcfce7",
-          200: "#bbf7d0",
-          300: "#86efac",
-          400: "#4ade80",
-          500: "#22c55e",
-          600: "#16a34a",
-          700: "#15803d",
-          800: "#166534",
-          900: "#14532d",
+        text: {
+          primary: "#FAFAFA",
+          secondary: "#A3A3A3",
+          muted: "#737373",
+        },
+        layer: {
+          "1": "#FF5757",
+          "2": "#FFB347",
+          "3": "#4ADE80",
+          "4": "#60A5FA",
+          "5": "#C084FC",
         },
       },
       fontFamily: {
-        sans: [
-          "Inter",
-          "ui-sans-serif",
-          "system-ui",
-          "-apple-system",
-          "sans-serif",
-        ],
-        mono: [
-          "JetBrains Mono",
-          "ui-monospace",
-          "SFMono-Regular",
-          "monospace",
-        ],
+        heading: ["Space Grotesk", "Noto Sans SC", "sans-serif"],
+        body: ["DM Sans", "Noto Sans SC", "sans-serif"],
+        mono: ["JetBrains Mono", "ui-monospace", "monospace"],
       },
-      typography: {
-        DEFAULT: {
-          css: {
-            maxWidth: "none",
-            color: "#334155",
-            a: {
-              color: "#3b82f6",
-              "&:hover": {
-                color: "#1d4ed8",
-              },
-            },
-          },
+      boxShadow: {
+        card: "0 4px 12px rgba(0, 0, 0, 0.4)",
+        "card-hover": "0 8px 30px rgba(0, 0, 0, 0.5)",
+        modal: "0 20px 60px rgba(0, 0, 0, 0.6)",
+        glow: "0 0 20px var(--tw-shadow-color)",
+      },
+      animation: {
+        "fade-in": "fadeIn 300ms ease-out",
+        "slide-up": "slideUp 300ms ease-out",
+        "slide-down": "slideDown 200ms ease-out",
+        "scale-in": "scaleIn 200ms ease-out",
+        shimmer: "shimmer 2s infinite",
+      },
+      keyframes: {
+        fadeIn: {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
         },
+        slideUp: {
+          "0%": { opacity: "0", transform: "translateY(8px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        slideDown: {
+          "0%": { opacity: "0", transform: "translateY(-8px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        scaleIn: {
+          "0%": { opacity: "0", transform: "scale(0.95)" },
+          "100%": { opacity: "1", transform: "scale(1)" },
+        },
+        shimmer: {
+          "0%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(100%)" },
+        },
+      },
+      borderRadius: {
+        card: "16px",
+        button: "12px",
+        modal: "20px",
+      },
+      maxWidth: {
+        "content": "72rem",
+        "prose": "65ch",
       },
     },
   },

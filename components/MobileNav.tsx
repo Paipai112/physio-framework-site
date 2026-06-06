@@ -29,7 +29,7 @@ export function MobileNav({ links }: { links: NavLink[] }) {
     <div className="md:hidden">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-800 hover:text-white"
+        className="rounded-xl p-2.5 text-text-secondary transition-all duration-200 hover:bg-surface-hover hover:text-text-primary"
         aria-label={isOpen ? "关闭菜单" : "打开菜单"}
         aria-expanded={isOpen}
       >
@@ -60,18 +60,20 @@ export function MobileNav({ links }: { links: NavLink[] }) {
       {isOpen && (
         <div className="fixed inset-0 z-40">
           <div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/80 backdrop-blur-md"
             onClick={close}
           />
           <nav
-            className="absolute right-0 top-0 h-full w-64 bg-slate-900 p-6 shadow-2xl"
+            className="absolute right-0 top-0 h-full w-72 border-l border-border-subtle bg-surface-elevated shadow-2xl"
             aria-label="移动端导航"
           >
-            <div className="mb-8 flex items-center justify-between">
-              <span className="text-sm font-semibold text-slate-400">导航</span>
+            <header className="flex items-center justify-between px-6 pt-6 pb-4">
+              <span className="font-heading text-sm text-text-muted">
+                导航
+              </span>
               <button
                 onClick={close}
-                className="rounded-lg p-1 text-slate-400 hover:bg-slate-800 hover:text-white"
+                className="rounded-xl p-2 text-text-muted transition-all duration-200 hover:bg-surface-hover hover:text-text-primary"
                 aria-label="关闭菜单"
               >
                 <svg
@@ -88,14 +90,14 @@ export function MobileNav({ links }: { links: NavLink[] }) {
                   />
                 </svg>
               </button>
-            </div>
-            <ul className="space-y-1">
+            </header>
+            <ul className="space-y-1 px-3">
               {links.map((link) => (
                 <li key={link.href}>
                   <a
                     href={link.href}
                     onClick={close}
-                    className="block rounded-lg px-4 py-3 text-base font-medium text-slate-300 transition-colors hover:bg-slate-800 hover:text-white"
+                    className="block rounded-xl px-4 py-3 font-medium text-text-secondary transition-all duration-200 hover:bg-surface-hover hover:text-text-primary"
                   >
                     {link.label}
                   </a>

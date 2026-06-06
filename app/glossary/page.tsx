@@ -36,7 +36,7 @@ export default function GlossaryListPage() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       <BreadcrumbNav
         crumbs={[
           { label: "首页", href: "/" },
@@ -44,28 +44,32 @@ export default function GlossaryListPage() {
         ]}
       />
 
-      <h1 className="text-3xl font-bold text-white">术语词典</h1>
-      <p className="text-slate-400">
-        共 {glossaryTerms.length} 个专业术语
-      </p>
+      <div>
+        <h1 className="font-heading text-3xl font-bold text-text-primary mb-2">
+          术语词典
+        </h1>
+        <p className="text-text-secondary mb-8">
+          共收录 {glossaryTerms.length} 个生理信号处理领域专业术语，按类别分组展示
+        </p>
 
-      <div className="flex flex-wrap gap-2">
-        {glossaryTerms.map((term) => (
-          <Link
-            key={term.id}
-            href={`/glossary/${term.id}`}
-            className="rounded-lg border border-slate-700/50 bg-slate-800/20 px-3 py-1.5 text-sm text-slate-300 transition-all hover:border-slate-500 hover:text-white"
-          >
-            {term.term}
-          </Link>
-        ))}
+        <div className="flex flex-wrap gap-2">
+          {glossaryTerms.map((term) => (
+            <Link
+              key={term.id}
+              href={`/glossary/${term.id}`}
+              className="rounded-lg border border-border-subtle bg-surface-elevated px-3 py-1.5 text-sm text-text-secondary transition-all hover:border-white/20 hover:text-text-primary hover:bg-surface-highlight"
+            >
+              {term.term}
+            </Link>
+          ))}
+        </div>
       </div>
 
       {Object.entries(grouped).map(([category, terms]) => (
         <section key={category}>
-          <h2 className="mb-4 text-xl font-semibold text-white">
+          <h2 className="font-heading text-lg font-semibold text-text-primary mb-3">
             {categoryIcons[category] ?? "📂"} {category}
-            <span className="ml-2 text-sm text-slate-500">
+            <span className="ml-2 text-sm font-normal text-text-muted">
               ({terms.length})
             </span>
           </h2>
@@ -74,12 +78,17 @@ export default function GlossaryListPage() {
               <Link
                 key={term.id}
                 href={`/glossary/${term.id}`}
-                className="block rounded-lg border border-slate-700/50 bg-slate-800/20 p-4 transition-colors hover:border-slate-600"
+                className="rounded-xl border border-border-subtle bg-surface-elevated p-4 hover:bg-surface-highlight hover:border-white/10 transition-all duration-200"
               >
-                <div className="font-medium text-primary-400">
-                  {term.term}
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className="text-blue-400 font-medium">
+                    {term.term}
+                  </span>
+                  <span className="rounded-full bg-white/5 text-text-muted text-[11px] px-2 py-0.5">
+                    {term.category}
+                  </span>
                 </div>
-                <p className="mt-1 line-clamp-2 text-sm text-slate-500">
+                <p className="text-text-secondary text-sm mt-1 line-clamp-1">
                   {term.definition}
                 </p>
               </Link>

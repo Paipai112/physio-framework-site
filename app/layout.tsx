@@ -6,10 +6,10 @@ import BackToTop from "@/components/BackToTop";
 export const metadata: Metadata = {
   title: {
     default: "生理信号处理框架",
-    template: "%s - 生理信号处理框架",
+    template: "%s — 生理信号处理框架",
   },
   description:
-    "一个系统化的生理信号处理知识体系，从传感器到临床应用的完整技术栈",
+    "一个系统化的生理信号处理知识体系，从传感器到临床应用的完整技术栈。覆盖 PPG、ECG、HRV、睡眠分析等 98 个技术模块。",
 };
 
 const navLinks = [
@@ -17,7 +17,7 @@ const navLinks = [
   { href: "/layer", label: "层级" },
   { href: "/module", label: "模块" },
   { href: "/glossary", label: "术语" },
-  { href: "/references", label: "参考文献" },
+  { href: "/references", label: "文献" },
 ];
 
 export default function RootLayout({
@@ -27,76 +27,72 @@ export default function RootLayout({
 }) {
   return (
     <html lang="zh-CN" className="dark">
-      <body className="min-h-screen bg-surface-dark text-slate-100 antialiased">
+      <body className="min-h-screen bg-surface font-body text-text-primary antialiased">
         {/* Skip to content */}
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-primary-600 focus:px-4 focus:py-2 focus:text-white focus:outline-none"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-6 focus:top-6 focus:z-[100] focus:rounded-xl focus:bg-white focus:px-5 focus:py-3 focus:text-black focus:outline-none"
         >
           跳转到主内容
         </a>
 
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          {/* Header */}
-          <header className="border-b border-slate-700/50 py-6">
-            <div className="flex items-center justify-between">
-              <a href="/" className="group">
-                <h1 className="text-2xl font-bold tracking-tight text-white group-hover:text-primary-400 transition-colors">
-                  生理信号处理框架
-                </h1>
-                <p className="mt-1 text-sm text-slate-400">
-                  Physiological Signal Processing Framework
-                </p>
-              </a>
+        {/* Header */}
+        <header className="sticky top-0 z-40 border-b border-border-subtle bg-surface/80 backdrop-blur-xl">
+          <div className="mx-auto flex max-w-content items-center justify-between px-6 py-4">
+            <a href="/" className="group shrink-0">
+              <span className="font-heading text-lg font-semibold tracking-tight text-text-primary transition-colors group-hover:text-white">
+                生理信号处理框架
+              </span>
+            </a>
 
-              {/* Desktop nav */}
-              <nav className="hidden md:flex md:items-center md:space-x-1" aria-label="主导航">
-                {navLinks.map((link) => (
-                  <a
-                    key={link.href}
-                    href={link.href}
-                    className="rounded-lg px-3 py-2 text-sm font-medium text-slate-300 transition-colors hover:bg-slate-800 hover:text-white"
-                  >
-                    {link.label}
-                  </a>
-                ))}
-              </nav>
+            {/* Desktop nav */}
+            <nav className="hidden md:flex md:items-center md:gap-1" aria-label="主导航">
+              {navLinks.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className="rounded-xl px-4 py-2 text-sm font-medium text-text-secondary transition-all duration-200 hover:bg-surface-hover hover:text-text-primary"
+                >
+                  {link.label}
+                </a>
+              ))}
+            </nav>
 
-              {/* Mobile nav */}
-              <MobileNav links={navLinks} />
+            {/* Mobile nav */}
+            <MobileNav links={navLinks} />
+          </div>
+        </header>
+
+        {/* Main */}
+        <main id="main-content" className="mx-auto max-w-content px-6 py-10" tabIndex={-1}>
+          {children}
+        </main>
+
+        {/* Footer */}
+        <footer className="border-t border-border-subtle">
+          <div className="mx-auto flex max-w-content flex-col items-center gap-6 px-6 py-10 sm:flex-row sm:justify-between">
+            <div>
+              <p className="text-sm font-medium text-text-primary">
+                生理信号处理框架
+              </p>
+              <p className="mt-1 text-xs text-text-muted">
+                开源知识体系 — 从传感器到临床应用的完整技术栈
+              </p>
             </div>
-          </header>
+            <nav className="flex gap-8 text-xs text-text-muted" aria-label="页脚导航">
+              {navLinks.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className="transition-colors duration-200 hover:text-text-secondary"
+                >
+                  {link.label}
+                </a>
+              ))}
+            </nav>
+          </div>
+        </footer>
 
-          {/* Main Content */}
-          <main id="main-content" className="py-8" tabIndex={-1}>
-            {children}
-          </main>
-
-          {/* Footer */}
-          <footer className="border-t border-slate-700/50 py-8">
-            <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
-              <div className="text-center sm:text-left">
-                <p className="text-sm text-slate-400">
-                  生理信号处理框架 &mdash; 开源知识体系
-                </p>
-                <p className="mt-1 text-xs text-slate-500">
-                  从传感器到临床应用的系统化技术栈
-                </p>
-              </div>
-              <nav className="flex gap-6 text-xs text-slate-500" aria-label="页脚导航">
-                {navLinks.map((link) => (
-                  <a
-                    key={link.href}
-                    href={link.href}
-                    className="transition-colors hover:text-slate-300"
-                  >
-                    {link.label}
-                  </a>
-                ))}
-              </nav>
-            </div>
-          </footer>
-        </div>
         <BackToTop />
       </body>
     </html>

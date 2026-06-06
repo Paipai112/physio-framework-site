@@ -58,7 +58,7 @@ export default function GlossaryPopup({ termId, children }: Props) {
     <span className="relative inline">
       <span
         ref={ref}
-        className="cursor-help border-b border-dashed border-primary-500/50 text-primary-400"
+        className="cursor-help border-b border-dashed border-blue-400/50 text-blue-400 hover:text-blue-300 transition-colors"
         onClick={() => setIsOpen(!isOpen)}
         role="button"
         tabIndex={0}
@@ -75,22 +75,24 @@ export default function GlossaryPopup({ termId, children }: Props) {
       {isOpen && (
         <div
           ref={popupRef}
-          className={`absolute left-1/2 z-50 w-72 -translate-x-1/2 rounded-lg border border-slate-600 bg-slate-800 p-4 shadow-xl ${
+          className={`animate-scale-in absolute left-1/2 z-50 w-80 -translate-x-1/2 rounded-2xl border border-border-strong bg-surface-elevated/80 shadow-modal p-5 backdrop-blur-xl ${
             isTop ? "bottom-full mb-2" : "top-full mt-2"
           }`}
         >
-          <div className="mb-2">
-            <span className="text-sm font-medium text-white">
+          <div className="flex items-center flex-wrap gap-y-1 mb-2">
+            <span className="font-heading font-semibold text-text-primary text-sm">
               {term.term}
             </span>
-            <span className="ml-2 rounded bg-slate-700/50 px-2 py-0.5 text-xs text-slate-400">
+            <span className="rounded-full bg-white/5 text-text-muted text-[11px] px-2 py-0.5 ml-2">
               {term.category}
             </span>
           </div>
-          <p className="mb-3 text-sm text-slate-300">{term.definition}</p>
+          <p className="text-text-secondary text-sm mt-2 leading-relaxed">
+            {term.definition}
+          </p>
           <Link
             href={`/glossary/${termId}`}
-            className="text-xs text-primary-400 hover:text-primary-300"
+            className="text-blue-400 hover:text-blue-300 text-xs mt-3 inline-block transition-colors"
             onClick={close}
           >
             查看详情 &rarr;
@@ -98,8 +100,8 @@ export default function GlossaryPopup({ termId, children }: Props) {
           <div
             className={`absolute left-1/2 -translate-x-1/2 border-8 border-transparent ${
               isTop
-                ? "top-full border-t-slate-600"
-                : "bottom-full border-b-slate-600"
+                ? "top-full border-t-border-strong"
+                : "bottom-full border-b-border-strong"
             }`}
           />
         </div>

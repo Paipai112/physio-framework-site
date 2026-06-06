@@ -53,19 +53,20 @@ export default function LayerDetailPage({ params }: Props) {
         ]}
       />
 
-      <div className="rounded-xl border border-slate-700/50 bg-slate-800/30 p-8">
-        <div className="mb-4 text-6xl">{layer.icon}</div>
-        <h1 className="text-3xl font-bold text-white">{layer.name}</h1>
-        <p className="mt-2 max-w-3xl text-lg text-slate-400">
+      {/* Layer header card */}
+      <div className="rounded-2xl border border-border-subtle bg-surface-elevated p-8">
+        <div className="mb-4 text-5xl">{layer.icon}</div>
+        <h1 className="font-heading text-3xl font-bold text-text-primary">{layer.name}</h1>
+        <p className="mt-3 max-w-3xl text-lg text-text-secondary">
           {layer.description}
         </p>
-        <div className="mt-4 flex items-center gap-3">
+        <div className="mt-5 flex items-center gap-3">
           <span
-            className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${badgeClass}`}
+            className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium ${badgeClass}`}
           >
             {layer.id}
           </span>
-          <span className="text-sm text-slate-500">
+          <span className="text-sm text-text-muted">
             {layerModules.length} 个模块
           </span>
         </div>
@@ -73,11 +74,11 @@ export default function LayerDetailPage({ params }: Props) {
 
       {Object.entries(tagGroups).map(([tag, tagModules]) => (
         <section key={tag}>
-          <h2 className="mb-4 text-xl font-semibold text-white">
-            <span className="rounded bg-slate-700/50 px-2 py-0.5 text-base">
+          <h2 className="mb-4 font-heading text-lg font-semibold text-text-primary">
+            <span className="inline-block rounded-lg bg-white/5 px-3 py-1 text-sm text-text-secondary">
               {tag}
             </span>
-            <span className="ml-2 text-sm text-slate-500">
+            <span className="ml-2 text-sm text-text-muted">
               ({tagModules.length})
             </span>
           </h2>
@@ -100,8 +101,8 @@ export default function LayerDetailPage({ params }: Props) {
       )}
 
       {layerModules.length === 0 && (
-        <div className="rounded-xl border border-dashed border-slate-700/50 p-12 text-center">
-          <p className="text-slate-500">该层级暂无模块</p>
+        <div className="rounded-2xl border border-dashed border-border-subtle p-16 text-center text-text-muted italic">
+          <p>该层级暂无模块</p>
         </div>
       )}
     </div>

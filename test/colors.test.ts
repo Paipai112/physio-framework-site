@@ -16,12 +16,12 @@ describe("layer colors", () => {
   });
 
   it("getLayerHex returns the correct color", () => {
-    expect(getLayerHex("L1")).toBe("#ef4444");
-    expect(getLayerHex("L5")).toBe("#8b5cf6");
+    expect(getLayerHex("L1")).toBe("#FF5757");
+    expect(getLayerHex("L5")).toBe("#C084FC");
   });
 
   it("getLayerHex returns fallback for unknown layer", () => {
-    expect(getLayerHex("L99")).toBe("#64748b");
+    expect(getLayerHex("L99")).toBe("#737373");
   });
 
   it("layerBorderColors has entries for all layers", () => {

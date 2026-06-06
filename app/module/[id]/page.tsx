@@ -34,9 +34,9 @@ export function generateMetadata({ params }: Props): Metadata {
 }
 
 const importanceColors: Record<string, string> = {
-  high: "bg-amber-500/10 text-amber-400",
-  medium: "bg-blue-500/10 text-blue-400",
-  low: "bg-slate-500/10 text-slate-400",
+  high: "bg-amber-500/10 text-amber-400 border border-amber-500/20",
+  medium: "bg-blue-500/10 text-blue-400 border border-blue-500/20",
+  low: "bg-white/5 text-text-muted border border-white/10",
 };
 
 export default function ModuleDetailPage({ params }: Props) {
@@ -95,8 +95,10 @@ export default function ModuleDetailPage({ params }: Props) {
 
       {/* Module Header */}
       <div>
-        <div className="mb-3 flex flex-wrap items-center gap-3">
-          <h1 className="text-3xl font-bold text-white">{mod.name}</h1>
+        <div className="mb-2 flex flex-wrap items-center gap-3">
+          <h1 className="font-heading text-3xl font-bold text-text-primary">
+            {mod.name}
+          </h1>
           {layer && (
             <span
               className={`rounded-full px-3 py-1 text-xs font-medium ${impClass}`}
@@ -108,11 +110,11 @@ export default function ModuleDetailPage({ params }: Props) {
                   : "辅助"}
             </span>
           )}
-          <span className="rounded-full bg-slate-700/50 px-3 py-1 text-xs text-slate-400">
+          <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-text-muted">
             {mod.layer}
           </span>
         </div>
-        <p className="text-lg text-slate-400">{mod.summary}</p>
+        <p className="text-lg text-text-secondary">{mod.summary}</p>
       </div>
 
       {/* Tags */}
@@ -120,7 +122,7 @@ export default function ModuleDetailPage({ params }: Props) {
         {mod.tags.map((tag) => (
           <span
             key={tag}
-            className="rounded-full bg-slate-700/50 px-3 py-1 text-sm text-slate-300"
+            className="rounded-full border border-white/5 bg-white/5 px-3 py-1 text-sm text-text-secondary"
           >
             #{tag}
           </span>
@@ -128,22 +130,26 @@ export default function ModuleDetailPage({ params }: Props) {
       </div>
 
       {/* Description */}
-      <section className="rounded-xl border border-slate-700/50 bg-slate-800/30 p-6">
-        <h2 className="mb-4 text-lg font-semibold text-white">概述</h2>
+      <section className="rounded-2xl border border-border-subtle bg-surface-elevated p-6">
+        <h2 className="mb-4 font-heading text-lg font-semibold text-text-primary">
+          概述
+        </h2>
         <DescriptionRenderer paragraphs={descParagraphs} />
       </section>
 
       {/* Dependency Graph */}
       {graphNodes.length > 1 && (
-        <section>
-          <h2 className="mb-4 text-lg font-semibold text-white">依赖关系图</h2>
+        <section className="rounded-2xl border border-border-subtle bg-surface-elevated p-6">
+          <h2 className="mb-4 font-heading text-lg font-semibold text-text-primary">
+            依赖关系图
+          </h2>
           <DependencyGraph
             nodes={graphNodes}
             edges={graphEdges}
             width={700}
             height={350}
           />
-          <p className="mt-2 text-xs text-slate-500">
+          <p className="mt-3 text-xs text-text-muted">
             滚轮缩放 · 拖拽平移 · 悬停查看 · 点击跳转详情 · 颜色按层级区分
           </p>
         </section>
@@ -152,8 +158,8 @@ export default function ModuleDetailPage({ params }: Props) {
       {/* Dependencies & Feeds Into */}
       <div className="grid gap-6 sm:grid-cols-2">
         {depModules.length > 0 && (
-          <section className="rounded-xl border border-slate-700/50 bg-slate-800/30 p-6">
-            <h2 className="mb-3 text-lg font-semibold text-white">
+          <section className="rounded-2xl border border-border-subtle bg-surface-elevated p-6">
+            <h2 className="mb-3 font-heading text-base font-semibold text-text-primary">
               依赖（下级输入）
             </h2>
             <ul className="space-y-2">
@@ -161,11 +167,11 @@ export default function ModuleDetailPage({ params }: Props) {
                 <li key={dep.id}>
                   <Link
                     href={`/module/${dep.id}`}
-                    className="text-primary-400 hover:text-primary-300 hover:underline"
+                    className="text-blue-400 hover:text-blue-300"
                   >
                     {dep.name}
                   </Link>
-                  <span className="ml-2 text-xs text-slate-500">
+                  <span className="ml-2 text-xs text-text-muted">
                     {dep.summary.slice(0, 60)}...
                   </span>
                 </li>
@@ -174,8 +180,8 @@ export default function ModuleDetailPage({ params }: Props) {
           </section>
         )}
         {feedModules.length > 0 && (
-          <section className="rounded-xl border border-slate-700/50 bg-slate-800/30 p-6">
-            <h2 className="mb-3 text-lg font-semibold text-white">
+          <section className="rounded-2xl border border-border-subtle bg-surface-elevated p-6">
+            <h2 className="mb-3 font-heading text-base font-semibold text-text-primary">
               供给（上级输出）
             </h2>
             <ul className="space-y-2">
@@ -183,11 +189,11 @@ export default function ModuleDetailPage({ params }: Props) {
                 <li key={feed.id}>
                   <Link
                     href={`/module/${feed.id}`}
-                    className="text-primary-400 hover:text-primary-300 hover:underline"
+                    className="text-blue-400 hover:text-blue-300"
                   >
                     {feed.name}
                   </Link>
-                  <span className="ml-2 text-xs text-slate-500">
+                  <span className="ml-2 text-xs text-text-muted">
                     {feed.summary.slice(0, 60)}...
                   </span>
                 </li>
@@ -199,30 +205,34 @@ export default function ModuleDetailPage({ params }: Props) {
 
       {/* Implementations */}
       <section>
-        <h2 className="mb-4 text-xl font-semibold text-white">实现方案</h2>
+        <h2 className="mb-4 font-heading text-xl font-semibold text-text-primary">
+          实现方案
+        </h2>
         <ImplementationTabs implementations={mod.implementations} />
       </section>
 
       {/* Glossary Terms */}
       {terms.length > 0 && (
         <section>
-          <h2 className="mb-4 text-xl font-semibold text-white">相关术语</h2>
+          <h2 className="mb-4 font-heading text-xl font-semibold text-text-primary">
+            相关术语
+          </h2>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {terms.map((term) => (
               <Link
                 key={term.id}
                 href={`/glossary/${term.id}`}
-                className="block rounded-lg border border-slate-700/50 bg-slate-800/20 p-4 transition-colors hover:border-slate-600"
+                className="block rounded-xl border border-border-subtle bg-surface-elevated p-4 transition-all duration-200 hover:border-white/10 hover:bg-surface-highlight"
               >
                 <div className="flex items-center gap-2">
-                  <span className="font-medium text-primary-400">
+                  <span className="font-medium text-blue-400">
                     {term.term}
                   </span>
-                  <span className="rounded bg-slate-700/50 px-1.5 py-0.5 text-xs text-slate-400">
+                  <span className="rounded-full bg-white/5 px-2 py-0.5 text-[11px] text-text-muted">
                     {term.category}
                   </span>
                 </div>
-                <p className="mt-1 line-clamp-2 text-sm text-slate-500">
+                <p className="mt-1 line-clamp-2 text-sm text-text-secondary">
                   {term.definition}
                 </p>
               </Link>
@@ -241,7 +251,7 @@ export default function ModuleDetailPage({ params }: Props) {
       {/* Related Modules */}
       {sameLayerModules.length > 0 && (
         <section>
-          <h2 className="mb-4 text-xl font-semibold text-white">
+          <h2 className="mb-4 font-heading text-xl font-semibold text-text-primary">
             同层相关模块
           </h2>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -249,12 +259,12 @@ export default function ModuleDetailPage({ params }: Props) {
               <Link
                 key={rel.id}
                 href={`/module/${rel.id}`}
-                className="rounded-lg border border-slate-700/50 bg-slate-800/20 p-4 transition-all hover:border-slate-600 hover:bg-slate-800/40"
+                className="rounded-xl border border-border-subtle bg-surface-elevated p-4 transition-all duration-200 hover:border-white/10 hover:bg-surface-highlight"
               >
-                <div className="text-sm font-medium text-white hover:text-primary-400">
+                <div className="text-sm font-medium text-text-primary">
                   {rel.name}
                 </div>
-                <div className="mt-1 line-clamp-1 text-xs text-slate-500">
+                <div className="mt-1 line-clamp-1 text-xs text-text-muted">
                   {rel.summary}
                 </div>
               </Link>
@@ -265,14 +275,14 @@ export default function ModuleDetailPage({ params }: Props) {
 
       {/* Prev / Next Navigation */}
       <nav
-        className="flex items-center justify-between border-t border-slate-700/50 pt-6"
+        className="mt-8 flex items-center justify-between border-t border-border-subtle pt-6"
         aria-label="模块导航"
       >
         <div>
           {prevModule && (
             <Link
               href={`/module/${prevModule.id}`}
-              className="text-sm text-primary-400 hover:text-primary-300"
+              className="text-sm text-blue-400 hover:text-blue-300"
             >
               &larr; {prevModule.name}
             </Link>
@@ -280,7 +290,7 @@ export default function ModuleDetailPage({ params }: Props) {
         </div>
         <Link
           href={layer ? `/layer/${mod.layer}` : "/module"}
-          className="text-sm text-slate-500 hover:text-white"
+          className="text-sm text-text-muted hover:text-text-secondary"
         >
           返回{layer?.name ?? "模块列表"}
         </Link>
@@ -288,7 +298,7 @@ export default function ModuleDetailPage({ params }: Props) {
           {nextModule && (
             <Link
               href={`/module/${nextModule.id}`}
-              className="text-sm text-primary-400 hover:text-primary-300"
+              className="text-sm text-blue-400 hover:text-blue-300"
             >
               {nextModule.name} &rarr;
             </Link>

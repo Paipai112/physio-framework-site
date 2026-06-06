@@ -1,28 +1,27 @@
 import Link from "next/link";
-import type { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "页面未找到 - 生理信号处理框架",
-};
 
 export default function NotFound() {
   return (
-    <div className="flex flex-col items-center justify-center py-24 text-center">
-      <div className="mb-6 text-8xl">🔍</div>
-      <h1 className="text-4xl font-bold text-white">404</h1>
-      <p className="mt-4 text-lg text-slate-400">
+    <div className="flex flex-col items-center justify-center py-32 text-center">
+      <span className="font-heading text-[8rem] font-bold tracking-[-0.05em] text-white/5 select-none">
+        404
+      </span>
+      <h1 className="font-heading text-2xl font-semibold text-text-primary mt-[-3rem]">
+        页面未找到
+      </h1>
+      <p className="text-text-secondary mt-3">
         您访问的页面不存在或已被移除
       </p>
-      <div className="mt-8 flex gap-4">
+      <div className="flex gap-4 mt-8">
         <Link
           href="/"
-          className="rounded-lg bg-primary-600 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary-700"
+          className="rounded-xl bg-white text-black px-6 py-3 text-sm font-medium hover:bg-white/90 transition-all duration-200"
         >
           返回首页
         </Link>
         <Link
           href="/module"
-          className="rounded-lg border border-slate-600 px-6 py-3 text-sm font-semibold text-slate-300 transition-colors hover:border-slate-500 hover:text-white"
+          className="rounded-xl border border-border-default text-text-secondary px-6 py-3 text-sm font-medium hover:border-white/30 hover:text-text-primary transition-all duration-200"
         >
           浏览模块
         </Link>
