@@ -75,7 +75,7 @@ function LayerBentoCard({
         </div>
 
         {/* Description */}
-        <p className="mb-4 line-clamp-2 text-sm text-text-muted leading-relaxed">
+        <p className="mb-4 line-clamp-2 text-base text-text-body leading-relaxed">
           {layerDescription}
         </p>
 
@@ -123,7 +123,9 @@ function StatItem({ value, label }: { value: number; label: string }) {
   return (
     <div className="text-center">
       <div className="font-heading text-3xl font-bold text-text-primary">
-        {value}
+        <span className="transition-colors duration-200 hover:text-white">
+            {value}
+          </span>
       </div>
       <div className="mt-1 text-sm text-text-muted">{label}</div>
     </div>
@@ -174,13 +176,13 @@ export default function HomePage() {
         <div className="mt-10 flex items-center justify-center gap-4">
           <Link
             href="/layer/L1"
-            className="rounded-xl bg-white px-6 py-3 text-sm font-medium text-black transition-all duration-200 hover:bg-white/90"
+            className="rounded-xl bg-white px-6 py-3 text-sm font-medium text-black transition-all duration-200 hover:bg-white/90 hover:scale-[1.02]"
           >
             探索五层架构
           </Link>
           <Link
             href="/module"
-            className="rounded-xl border border-border-default px-6 py-3 text-sm font-medium text-text-secondary transition-all duration-200 hover:border-white/30 hover:text-text-primary"
+            className="rounded-xl border border-border-default px-6 py-3 text-sm font-medium text-text-secondary transition-all duration-200 hover:border-white/30 hover:text-text-primary hover:scale-[1.02]"
           >
             查看所有模块
           </Link>
@@ -219,11 +221,11 @@ export default function HomePage() {
       <section className="text-center">
         <Link
           href="/module"
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-text-secondary transition-colors hover:text-text-primary"
+          className="group inline-flex items-center gap-1.5 text-sm font-medium text-text-secondary transition-colors hover:text-text-primary"
         >
           浏览全部 {totalModules} 个模块
           <svg
-            className="h-4 w-4"
+            className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"

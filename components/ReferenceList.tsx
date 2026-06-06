@@ -32,10 +32,10 @@ function ReferenceCard({ reference: r }: { reference: Reference }) {
   const doiLink = r.doi ? `https://doi.org/${r.doi}` : null;
 
   return (
-    <div className="rounded-2xl border border-border-subtle bg-surface-elevated p-5 hover:bg-surface-highlight hover:border-white/10 transition-all duration-200">
+    <div className="group rounded-2xl border border-border-subtle bg-surface-elevated p-5 hover:bg-surface-highlight hover:border-white/10 transition-all duration-200">
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0 flex-1">
-          <span className="font-medium text-text-primary">{r.title}</span>
+          <span className="group-hover:text-white transition-colors duration-200 font-medium text-text-primary">{r.title}</span>
 
           {(r.authors || r.year) && (
             <p className="mt-1 text-sm text-text-secondary">
@@ -74,7 +74,7 @@ function ReferenceCard({ reference: r }: { reference: Reference }) {
           )}
         </div>
 
-        <span className="shrink-0 rounded-full bg-white/5 text-text-muted text-xs px-2 py-0.5 border border-white/5">
+        <span className="group-hover:bg-white/10 transition-colors duration-200 shrink-0 rounded-full bg-white/5 text-text-muted text-xs px-2 py-0.5 border border-white/5">
           {TYPE_LABELS[r.type]}
         </span>
       </div>

@@ -82,6 +82,7 @@ const config: Config = {
       maxWidth: {
         "content": "72rem",
         "prose": "65ch",
+        "prose-wide": "85ch",
       },
     },
   },

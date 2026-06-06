@@ -12,7 +12,7 @@ interface Props {
 
 function chipClass(layerId: string, isActive: boolean): string {
   const base =
-    "rounded-full border px-3 py-1.5 text-xs font-medium transition-all duration-200 cursor-pointer select-none";
+    "rounded-full border px-3 py-1.5 text-xs font-medium transition-all duration-200 cursor-pointer select-none active:scale-95";
   if (isActive) {
     const colors =
       layerBadgeColors[layerId] ??
@@ -58,7 +58,7 @@ export default function ModuleListClient({ modules }: Props) {
           className={(() => {
             const isAllActive = activeLayer === null;
             const base =
-              "rounded-full border px-3 py-1.5 text-xs font-medium transition-all duration-200 cursor-pointer select-none";
+              "rounded-full border px-3 py-1.5 text-xs font-medium transition-all duration-200 cursor-pointer select-none active:scale-95";
             if (isAllActive) {
               return `${base} bg-white text-black border-white`;
             }
@@ -100,7 +100,7 @@ export default function ModuleListClient({ modules }: Props) {
                 {layerModules.length} 个模块
               </span>
             </div>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 motion-safe:animate-fade-in">
               {layerModules.map((mod) => (
                 <ModuleCard key={mod.id} module={mod} />
               ))}

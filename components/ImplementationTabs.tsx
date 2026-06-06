@@ -102,12 +102,12 @@ export default function ImplementationTabs({ implementations }: Props) {
         </div>
 
         {/* Vendor */}
-        <p className="text-text-secondary text-sm mb-3">
+        <p className="text-text-body text-sm mb-3">
           提供方: {active.vendor}
         </p>
 
         {/* Description */}
-        <p className="text-text-body mb-5 leading-relaxed">
+        <p className="text-text-body text-[15px] mb-5 leading-relaxed">
           {active.description}
         </p>
 

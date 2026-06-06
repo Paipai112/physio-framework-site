@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useRef, useEffect } from "react";
 import { LAYER_COLORS, LAYER_COLOR_FALLBACK } from "@/data/colors";
 
 interface Node {
@@ -36,6 +36,7 @@ export default function DependencyGraph({
   width = 700,
   height = 400,
 }: Props) {
+  const svgRef = useRef<SVGSVGElement>(null);
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
   const [viewBox, setViewBox] = useState({ x: 0, y: 0, w: width, h: height });
   const [isPanning, setIsPanning] = useState(false);
@@ -71,6 +72,41 @@ export default function DependencyGraph({
     return result;
   }, [nodes, width, height]);
 
+  // Non-passive wheel listener for scroll lock + pinch-to-zoom detection
+  useEffect(() => {
+    const el = svgRef.current;
+    if (!el) return;
+
+    const handler = (e: WheelEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      // Horizontal swipe on trackpad — skip so the page can still pan horizontally when desired
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+
+      // Detect trackpad pinch-to-zoom (ctrlKey === true on macOS Safari/Chrome pinch)
+      const scaleFactor = e.ctrlKey
+        ? (1 - e.deltaY * 0.005)
+        : (e.deltaY > 0 ? 1.15 : 0.85);
+
+      setViewBox((vb) => {
+        const newW = vb.w * scaleFactor;
+        const newH = vb.h * scaleFactor;
+        const clampedW = Math.min(Math.max(newW, 200), width * 3);
+        const clampedH = Math.min(Math.max(newH, 150), height * 3);
+        return {
+          x: vb.x + (vb.w - clampedW) / 2,
+          y: vb.y + (vb.h - clampedH) / 2,
+          w: clampedW,
+          h: clampedH,
+        };
+      });
+    };
+
+    el.addEventListener("wheel", handler, { passive: false });
+    return () => el.removeEventListener("wheel", handler);
+  }, [viewBox.w, viewBox.h, width, height]);
+
   const getEdgeColor = useCallback(
     (isActive: boolean) => (isActive ? "#60A5FA" : "#2A2A2A"),
     [],
@@ -79,24 +115,6 @@ export default function DependencyGraph({
   const getNodeLabelColor = useCallback(
     (isHovered: boolean) => (isHovered ? "#FAFAFA" : "#A3A3A3"),
     [],
-  );
-
-  const handleWheel = useCallback(
-    (e: React.WheelEvent) => {
-      e.preventDefault();
-      const scale = e.deltaY > 0 ? 1.15 : 0.85;
-      const newW = viewBox.w * scale;
-      const newH = viewBox.h * scale;
-      const clampedW = Math.min(Math.max(newW, 200), width * 3);
-      const clampedH = Math.min(Math.max(newH, 150), height * 3);
-      setViewBox((vb) => ({
-        x: vb.x + (vb.w - clampedW) / 2,
-        y: vb.y + (vb.h - clampedH) / 2,
-        w: clampedW,
-        h: clampedH,
-      }));
-    },
-    [viewBox, width, height],
   );
 
   const handleMouseDown = useCallback(
@@ -133,11 +151,11 @@ export default function DependencyGraph({
   return (
     <div className="relative w-full">
       <svg
+        ref={svgRef}
         width={width}
         height={height}
         className="w-full rounded-2xl border border-border-subtle bg-surface-elevated"
         viewBox={`${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}`}
-        onWheel={handleWheel}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
@@ -182,7 +200,7 @@ export default function DependencyGraph({
           const color = LAYER_COLORS[node.layer] || LAYER_COLOR_FALLBACK;
           const { r, g, b } = hexToRGB(color);
           const labelLen = node.label.length;
-          const labelWidth = Math.min(labelLen * 7 + 16, 140);
+          const labelWidth = Math.min(labelLen * 7.5 + 18, 150);
           const labelHeight = 22;
           const isHovered = hoveredNode === node.id;
 
@@ -203,7 +221,7 @@ export default function DependencyGraph({
                 />
                 <rect
                   x={pos.x - labelWidth / 2}
-                  y={pos.y - labelHeight - 10}
+                  y={pos.y - labelHeight - 16}
                   width={labelWidth}
                   height={labelHeight}
                   rx={8}
@@ -214,11 +232,11 @@ export default function DependencyGraph({
                 />
                 <text
                   x={pos.x}
-                  y={pos.y - labelHeight / 2 - 10 + 1}
+                  y={pos.y - labelHeight / 2 - 16 + 0.5}
                   textAnchor="middle"
                   dominantBaseline="middle"
                   fill={getNodeLabelColor(isHovered)}
-                  fontSize="11"
+                  fontSize="12"
                   fontFamily="DM Sans, Noto Sans SC, sans-serif"
                   className="pointer-events-none transition-all duration-200"
                 >

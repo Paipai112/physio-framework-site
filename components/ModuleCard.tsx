@@ -21,7 +21,7 @@ export default function ModuleCard({ module }: Props) {
       className="block rounded-2xl border border-border-subtle bg-surface-elevated p-6 transition-all duration-200 hover:bg-surface-highlight hover:border-white/10 hover:translate-y-[-2px] hover:shadow-card-hover"
     >
       <div className="mb-2 flex items-center justify-between gap-2">
-        <h3 className="font-heading font-semibold text-text-primary line-clamp-1 text-base">
+        <h3 className="font-heading font-semibold text-text-primary line-clamp-1 text-lg">
           {module.name}
         </h3>
         <span

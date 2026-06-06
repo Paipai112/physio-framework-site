@@ -39,10 +39,11 @@ export default function RootLayout({
         {/* Header */}
         <header className="sticky top-0 z-40 border-b border-border-subtle bg-surface/80 backdrop-blur-xl">
           <div className="mx-auto flex max-w-content items-center justify-between px-6 py-4">
-            <a href="/" className="group shrink-0">
+            <a href="/" className="group shrink-0 relative">
               <span className="font-heading text-lg font-semibold tracking-tight text-text-primary transition-colors group-hover:text-white">
                 生理信号处理框架
               </span>
+              <span className="absolute inset-x-0 -bottom-0.5 h-px scale-x-0 bg-white/50 transition-transform duration-300 group-hover:scale-x-100" />
             </a>
 
             {/* Desktop nav */}
@@ -51,7 +52,7 @@ export default function RootLayout({
                 <a
                   key={link.href}
                   href={link.href}
-                  className="rounded-xl px-4 py-2 text-sm font-medium text-text-secondary transition-all duration-200 hover:bg-surface-hover hover:text-text-primary"
+                  className="rounded-xl px-4 py-2 text-sm font-medium text-text-secondary transition-all duration-200 hover:scale-[1.02] hover:bg-surface-hover hover:text-text-primary"
                 >
                   {link.label}
                 </a>

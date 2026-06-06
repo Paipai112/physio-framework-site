@@ -79,6 +79,7 @@ fontFamily: {
 | `text-heading-3` | `1.25rem / 20px` | 1.4 | 500 | `text-primary` | Subheadings |
 | `text-body` | `1rem / 16px` | 1.75 | 400 | `text-body` (#D4D4D4) | Body text |
 | `text-body-sm` | `0.9375rem / 15px` | 1.6 | 400 | `text-body` | Secondary text |
+| `text-prose` | `0.9375rem / 15px` | 1.75 | 400 | — | Article body text |
 | `text-caption` | `0.8125rem / 13px` | 1.5 | 400 | `text-secondary` | Captions, meta |
 
 ---
@@ -179,6 +180,19 @@ fontFamily: {
 - No hardcoded colors — use Tailwind tokens or CSS variables
 - No `<img>` without alt text
 - No `text-[11px]` — minimum text size is `text-xs` (12px, 0.75rem)
+
+---
+
+### Formula Styling
+- Inline formulas: `<span class="formula">` — JetBrains Mono 0.875em, subtle bg tint, rounded, whitespace-nowrap
+- Block formulas: `<div class="formula-block">` — JetBrains Mono, left blue border accent, padding
+- Detection: segments containing Greek letters (αβγΔΣΩ), sqrt, math operators (=≈±×·), or dimensional units (kHz/μV/mg)
+
+### Dependency Graph
+- Wheel events over graph: capture only, prevent page scroll via passive:false listener
+- Pinch-to-zoom: support ctrlKey wheel events (trackpad pinch gesture)
+- Node label gap: minimum 8px between label bottom and circle top
+- Node circle radius: 8px (keep), label offset: 16px above circle
 
 ---
 

@@ -101,7 +101,7 @@ export default function GlossaryDetailPage({ params }: Props) {
                   href={`/module/${mod.id}`}
                   className="block rounded-2xl border border-border-subtle bg-surface-elevated p-5 hover:bg-surface-highlight hover:border-white/10 transition-all duration-200 group"
                 >
-                  <h3 className="font-medium text-text-primary group-hover:text-blue-400 transition-colors">
+                  <h3 className="font-medium text-text-primary group-hover:text-blue-400 transition-colors duration-200">
                     {mod.name}
                   </h3>
                   <p className="mt-1.5 text-sm text-text-secondary leading-relaxed line-clamp-2">
@@ -132,7 +132,7 @@ export default function GlossaryDetailPage({ params }: Props) {
       <div className="flex gap-4 pt-2">
         <Link
           href="/glossary"
-          className="text-sm text-blue-400 hover:text-blue-300 transition-colors"
+          className="text-sm text-blue-400 hover:text-blue-300 transition-colors hover:translate-x-[-2px] transition-transform duration-200"
         >
           &larr; 返回术语列表
         </Link>
