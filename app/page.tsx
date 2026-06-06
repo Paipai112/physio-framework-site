@@ -2,22 +2,21 @@ import Link from "next/link";
 import { modules } from "@/data/modules";
 import { layers } from "@/data/layers";
 import type { Module } from "@/data/types";
+import { getLayerHex } from "@/data/colors";
 
 export default function HomePage() {
-  const byLayer: Record<string, Module[]> = {
-    L1: modules.filter((m) => m.layer === "L1"),
-    L2: modules.filter((m) => m.layer === "L2"),
-    L3: modules.filter((m) => m.layer === "L3"),
-    L4: modules.filter((m) => m.layer === "L4"),
-    L5: modules.filter((m) => m.layer === "L5"),
-  };
+  const byLayer: Record<string, Module[]> = {};
+  for (const m of modules) {
+    if (!byLayer[m.layer]) byLayer[m.layer] = [];
+    byLayer[m.layer].push(m);
+  }
 
   return (
     <div className="space-y-16">
       {/* Hero Section */}
       <section className="py-12 text-center">
         <h2 className="text-4xl font-bold tracking-tight text-white sm:text-5xl">
-          🩺 系统化生理信号处理
+          系统化生理信号处理
         </h2>
         <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-400">
           从传感器到临床应用，构建完整的技术栈知识体系。
@@ -26,13 +25,13 @@ export default function HomePage() {
         <div className="mt-8 flex items-center justify-center gap-4">
           <Link
             href="/layer/L1"
-            className="rounded-lg bg-primary-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-primary-700"
+            className="rounded-lg bg-primary-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-primary-700 focus-ring"
           >
             探索五层架构
           </Link>
           <Link
-            href="/module/L1:ppg"
-            className="rounded-lg border border-slate-600 px-6 py-3 text-sm font-semibold text-slate-300 transition-colors hover:border-slate-500 hover:text-white"
+            href="/module"
+            className="rounded-lg border border-slate-600 px-6 py-3 text-sm font-semibold text-slate-300 transition-colors hover:border-slate-500 hover:text-white focus-ring"
           >
             查看所有模块
           </Link>
@@ -45,54 +44,80 @@ export default function HomePage() {
           五层架构概览
         </h3>
         <div className="relative mx-auto flex max-w-3xl flex-col items-center">
-          {layers.filter(l => l.id !== 'L0').map((layer, i) => (
-            <div key={layer.id} className="flex w-full items-center gap-4">
-              <div className="flex-none w-28">
-                <Link
-                  href={`/layer/${layer.id}`}
-                  className="group flex items-center gap-2 rounded-lg border border-slate-700/50 bg-slate-800/30 px-3 py-2 transition-all hover:border-slate-600"
-                >
-                  <span className="text-lg">{layer.icon}</span>
-                  <div>
-                    <div className="text-xs font-semibold text-white group-hover:text-primary-400 whitespace-nowrap">
-                      {layer.name}
+          {layers
+            .filter((l) => l.id !== "L0")
+            .map((layer, i) => (
+              <div key={layer.id} className="flex w-full items-center gap-4">
+                <div className="w-28 flex-none">
+                  <Link
+                    href={`/layer/${layer.id}`}
+                    className="group flex items-center gap-2 rounded-lg border border-slate-700/50 bg-slate-800/30 px-3 py-2 transition-all hover:border-slate-600"
+                  >
+                    <span className="text-lg">{layer.icon}</span>
+                    <div>
+                      <div className="whitespace-nowrap text-xs font-semibold text-white group-hover:text-primary-400">
+                        {layer.name}
+                      </div>
+                      <div className="text-[10px] text-slate-500">
+                        {byLayer[layer.id]?.length || 0} 模块
+                      </div>
                     </div>
-                    <div className="text-[10px] text-slate-500">
-                      {byLayer[layer.id]?.length || 0} 模块
-                    </div>
-                  </div>
-                </Link>
-              </div>
-              <div className="flex flex-col items-center">
-                <div
-                  className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold text-white`}
-                  style={{ backgroundColor: getLayerHex(layer.id) }}
-                >
-                  {layer.id.replace("L", "")}
+                  </Link>
                 </div>
-                {i < 4 && (
+                <div className="flex flex-col items-center">
                   <div
-                    className="h-8 w-0.5"
-                    style={{ backgroundColor: getLayerHex(layer.id) + "40" }}
-                  />
-                )}
+                    className="flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold text-white"
+                    style={{ backgroundColor: getLayerHex(layer.id) }}
+                  >
+                    {layer.id.replace("L", "")}
+                  </div>
+                  {i < 4 && (
+                    <div
+                      className="h-8 w-0.5"
+                      style={{
+                        backgroundColor: getLayerHex(layer.id) + "40",
+                      }}
+                    />
+                  )}
+                </div>
+                <div className="flex-1 text-left">
+                  <p className="text-sm leading-relaxed text-slate-500">
+                    {layer.description}
+                  </p>
+                </div>
               </div>
-              <div className="flex-1 text-left">
-                <p className="text-sm text-slate-500 leading-relaxed">{layer.description}</p>
-              </div>
-            </div>
-          ))}
+            ))}
         </div>
       </section>
 
       {/* Stats */}
       <section className="rounded-xl border border-slate-700/50 bg-slate-800/20 p-8">
         <div className="grid gap-6 text-center sm:grid-cols-5">
-          <StatBox value={byLayer.L1.length} label="传感器层" color="text-red-400" />
-          <StatBox value={byLayer.L2.length} label="基础指标层" color="text-amber-400" />
-          <StatBox value={byLayer.L3.length} label="中级（融合）指标层" color="text-emerald-400" />
-          <StatBox value={byLayer.L4.length} label="高级指标层" color="text-blue-400" />
-          <StatBox value={byLayer.L5.length} label="AI教练/平台层" color="text-violet-400" />
+          <StatBox
+            value={byLayer.L1?.length ?? 0}
+            label="传感器层"
+            color="text-red-400"
+          />
+          <StatBox
+            value={byLayer.L2?.length ?? 0}
+            label="基础指标层"
+            color="text-amber-400"
+          />
+          <StatBox
+            value={byLayer.L3?.length ?? 0}
+            label="中级（融合）指标层"
+            color="text-emerald-400"
+          />
+          <StatBox
+            value={byLayer.L4?.length ?? 0}
+            label="高级指标层"
+            color="text-blue-400"
+          />
+          <StatBox
+            value={byLayer.L5?.length ?? 0}
+            label="AI教练/平台层"
+            color="text-violet-400"
+          />
         </div>
       </section>
 
@@ -102,25 +127,27 @@ export default function HomePage() {
           快速入口
         </h3>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-          {layers.filter(l => l.id !== 'L0').map((layer) => (
-            <Link
-              key={layer.id}
-              href={`/layer/${layer.id}`}
-              className="group rounded-xl border border-slate-700/50 bg-slate-800/30 p-6 text-center transition-all hover:border-slate-600"
-            >
-              <div className="mb-2 text-3xl">{layer.icon}</div>
-              <div className="text-sm font-semibold text-white group-hover:text-primary-400">
-                {layer.name}
-              </div>
-              <div className="mt-1 text-xs text-slate-500">
-                {byLayer[layer.id]?.length || 0} 模块
-              </div>
-            </Link>
-          ))}
+          {layers
+            .filter((l) => l.id !== "L0")
+            .map((layer) => (
+              <Link
+                key={layer.id}
+                href={`/layer/${layer.id}`}
+                className="group rounded-xl border border-slate-700/50 bg-slate-800/30 p-6 text-center transition-all hover:border-slate-600"
+              >
+                <div className="mb-2 text-3xl">{layer.icon}</div>
+                <div className="text-sm font-semibold text-white group-hover:text-primary-400">
+                  {layer.name}
+                </div>
+                <div className="mt-1 text-xs text-slate-500">
+                  {byLayer[layer.id]?.length || 0} 模块
+                </div>
+              </Link>
+            ))}
         </div>
         <div className="mt-6 text-center">
           <Link
-            href="/module/L1:ppg"
+            href="/module"
             className="inline-flex items-center gap-2 text-sm text-primary-400 hover:text-primary-300"
           >
             浏览全部模块 &rarr;
@@ -146,15 +173,4 @@ function StatBox({
       <div className="mt-1 text-sm text-slate-400">{label}</div>
     </div>
   );
-}
-
-function getLayerHex(id: string): string {
-  const colors: Record<string, string> = {
-    L1: "#ef4444",
-    L2: "#f59e0b",
-    L3: "#10b981",
-    L4: "#3b82f6",
-    L5: "#8b5cf6",
-  };
-  return colors[id] ?? "#64748b";
 }

@@ -266,7 +266,8 @@ export const references: Reference[] = [
     title: "Automatic sleep staging from wrist-worn PPG using deep learning",
     authors: "Oura Health (technical report)",
     year: 2021,
-    type: "paper",
+    type: "documentation",
+    url: "https://ouraring.com",
     zhSummary: "Oura利用深度学习从腕部PPG信号自动判断睡眠分期",
   },
   {
@@ -754,7 +755,7 @@ export function getReferenceById(id: string): Reference | undefined {
 export function getReferencesByIds(ids: string[]): Reference[] {
   return ids
     .map((id) => getReferenceById(id))
-    .filter(Boolean) as Reference[];
+    .filter((r): r is Reference => r !== undefined);
 }
 
 export function getReferencesByType(type: string): Reference[] {

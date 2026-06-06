@@ -1,14 +1,15 @@
 "use client";
 
+import { useMemo } from "react";
 import { glossaryTerms } from "@/data/glossary";
 import TermLink from "./TermLink";
+import CitationMarker from "./CitationMarker";
 
 interface MatchEntry {
   id: string;
   names: string[];
 }
 
-/** Build a flat list of (name, termId) sorted by name length descending */
 function buildMatches(): { name: string; id: string }[] {
   const matches: { name: string; id: string }[] = [];
   for (const t of glossaryTerms) {
@@ -23,33 +24,54 @@ function buildMatches(): { name: string; id: string }[] {
   return matches;
 }
 
-const matchList = buildMatches();
-
-/** Escape regex special characters */
 function esc(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
+
+const matchList = buildMatches();
+const CITATION_RE = /\[(ref-[a-z0-9-]+)\]/g;
 
 export default function DescriptionRenderer({
   paragraphs,
 }: {
   paragraphs: string[];
 }) {
-  const pattern = matchList.map((m) => esc(m.name)).join("|");
-  const regex = new RegExp(`(${pattern})`, "g");
+  const pattern = useMemo(
+    () => matchList.map((m) => esc(m.name)).join("|"),
+    []
+  );
+  const termRegex = useMemo(
+    () => (pattern ? new RegExp(`(${pattern})`, "g") : null),
+    [pattern]
+  );
 
   return (
     <div className="space-y-4 text-slate-300 leading-relaxed">
       {paragraphs.map((p, i) => {
-        const parts = p.split(regex);
+        // First, split by citation markers
+        const citeSegments = p.split(CITATION_RE);
+
         return (
           <p key={i}>
-            {parts.map((part, j) => {
-              const found = matchList.find((m) => m.name === part);
-              if (found) {
-                return <TermLink key={j} termId={found.id} display={part} />;
+            {citeSegments.map((seg, j) => {
+              // Odd indices are citation IDs
+              if (j % 2 === 1) {
+                return (
+                  <CitationMarker key={j} citationIds={[seg]} />
+                );
               }
-              return <span key={j}>{part}</span>;
+              // Even indices are regular text — apply term linking
+              if (!termRegex) return <span key={j}>{seg}</span>;
+              const parts = seg.split(termRegex);
+              return parts.map((part, k) => {
+                const found = matchList.find((m) => m.name === part);
+                if (found) {
+                  return (
+                    <TermLink key={`${j}-${k}`} termId={found.id} display={part} />
+                  );
+                }
+                return <span key={`${j}-${k}`}>{part}</span>;
+              });
             })}
           </p>
         );

@@ -37,7 +37,7 @@ export const glossaryTerms: GlossaryTerm[] = [
     term: "EEG",
     category: "电生理",
     definition: "脑电图(Electroencephalography)，通过头皮电极采集大脑皮层神经电活动的技术。信号幅值仅数微伏至数百微伏，主要频带包括δ、θ、α、β、γ波。",
-    references: ["ref-niedermeyer"],
+    references: ["ref-eeg-basics"],
   },
   {
     id: "spo2",
@@ -314,5 +314,5 @@ export function getGlossaryTermById(id: string): GlossaryTerm | undefined {
 export function getGlossaryTermsByIds(ids: string[]): GlossaryTerm[] {
   return ids
     .map((id) => getGlossaryTermById(id))
-    .filter(Boolean) as GlossaryTerm[];
+    .filter((t): t is GlossaryTerm => t !== undefined);
 }

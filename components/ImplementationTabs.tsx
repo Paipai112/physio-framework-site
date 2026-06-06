@@ -24,7 +24,7 @@ export default function ImplementationTabs({ implementations }: Props) {
           <button
             key={i}
             onClick={() => setActiveIndex(i)}
-            className={`flex-1 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+            className={`flex-1 rounded-md px-3 py-2 text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 ${
               i === activeIndex
                 ? "bg-primary-600 text-white shadow-sm"
                 : "text-slate-400 hover:text-white"
@@ -36,7 +36,7 @@ export default function ImplementationTabs({ implementations }: Props) {
       </div>
 
       {/* Detail Panel */}
-      <div className="rounded-xl border border-slate-700/50 bg-slate-800/30 p-6">
+      <div className="rounded-xl border border-slate-700/50 bg-slate-800/30 p-6 transition-all duration-300" key={activeIndex}>
         <div className="mb-4 flex items-center justify-between">
           <h3 className="text-lg font-semibold text-white">{active.name}</h3>
           <span

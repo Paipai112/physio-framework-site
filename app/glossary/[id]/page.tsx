@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { getGlossaryTermById } from "@/data/glossary";
+import { notFound } from "next/navigation";
+import { getGlossaryTermById, glossaryTerms } from "@/data/glossary";
 import { getReferencesByIds } from "@/data/references";
 import { modules } from "@/data/modules";
+import type { Metadata } from "next";
 import BreadcrumbNav from "@/components/BreadcrumbNav";
 import ReferenceList from "@/components/ReferenceList";
 
@@ -10,11 +11,24 @@ interface Props {
   params: { id: string };
 }
 
+export function generateStaticParams() {
+  return glossaryTerms.map((t) => ({ id: t.id }));
+}
+
+export function generateMetadata({ params }: Props): Metadata {
+  const term = getGlossaryTermById(params.id);
+  if (!term) return { title: "术语未找到" };
+  return {
+    title: `${term.term} - 生理信号处理框架`,
+    description: term.definition.slice(0, 160),
+  };
+}
+
 export default function GlossaryDetailPage({ params }: Props) {
   const term = getGlossaryTermById(params.id);
 
   if (!term) {
-    redirect("/glossary");
+    notFound();
   }
 
   const refs = getReferencesByIds(term.references);

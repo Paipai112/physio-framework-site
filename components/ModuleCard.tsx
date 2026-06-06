@@ -1,31 +1,19 @@
 import Link from "next/link";
 import type { Module } from "@/data/types";
 import { getLayerById } from "@/data/layers";
+import { layerBorderColors, layerBadgeColors } from "@/data/colors";
 
 interface Props {
   module: Module;
 }
 
-const layerBorderColors: Record<string, string> = {
-  L1: "border-red-500/20 hover:border-red-500/50",
-  L2: "border-amber-500/20 hover:border-amber-500/50",
-  L3: "border-emerald-500/20 hover:border-emerald-500/50",
-  L4: "border-blue-500/20 hover:border-blue-500/50",
-  L5: "border-violet-500/20 hover:border-violet-500/50",
-};
-
-const layerBadgeColors: Record<string, string> = {
-  L1: "bg-red-500/10 text-red-400",
-  L2: "bg-amber-500/10 text-amber-400",
-  L3: "bg-emerald-500/10 text-emerald-400",
-  L4: "bg-blue-500/10 text-blue-400",
-  L5: "bg-violet-500/10 text-violet-400",
-};
-
 export default function ModuleCard({ module }: Props) {
   const layer = getLayerById(module.layer);
-  const borderClass = layerBorderColors[module.layer] ?? "border-slate-700/50 hover:border-slate-600";
-  const badgeClass = layerBadgeColors[module.layer] ?? "bg-slate-500/10 text-slate-400";
+  const borderClass =
+    layerBorderColors[module.layer] ??
+    "border-slate-700/50 hover:border-slate-600";
+  const badgeClass =
+    layerBadgeColors[module.layer] ?? "bg-slate-500/10 text-slate-400";
 
   return (
     <Link
@@ -36,7 +24,9 @@ export default function ModuleCard({ module }: Props) {
         <h3 className="font-semibold text-white hover:text-primary-400 line-clamp-1">
           {module.name}
         </h3>
-        <span className={`shrink-0 rounded px-2 py-0.5 text-xs font-medium ${badgeClass}`}>
+        <span
+          className={`shrink-0 rounded px-2 py-0.5 text-xs font-medium ${badgeClass}`}
+        >
           {module.layer}
         </span>
       </div>

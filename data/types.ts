@@ -33,7 +33,7 @@ export interface Module {
   name: string;
   summary: string;
   description: string;
-  importance: string;
+  importance: "high" | "medium" | "low";
   dependsOn: string[]; // module IDs this depends on
   feedsInto: string[]; // module IDs this feeds into
   tags: string[]; // categories

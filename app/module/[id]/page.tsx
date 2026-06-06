@@ -1,9 +1,15 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { getModuleById, getModulesByIds, getModulesByLayer } from "@/data/modules";
+import { notFound } from "next/navigation";
+import {
+  getModuleById,
+  getModulesByIds,
+  getModulesByLayer,
+  modules,
+} from "@/data/modules";
 import { getLayerById } from "@/data/layers";
 import { getGlossaryTermsByIds } from "@/data/glossary";
 import { getReferencesByIds } from "@/data/references";
+import type { Metadata } from "next";
 import BreadcrumbNav from "@/components/BreadcrumbNav";
 import DependencyGraph from "@/components/DependencyGraph";
 import ImplementationTabs from "@/components/ImplementationTabs";
@@ -12,6 +18,19 @@ import DescriptionRenderer from "@/components/DescriptionRenderer";
 
 interface Props {
   params: { id: string };
+}
+
+export function generateStaticParams() {
+  return modules.map((m) => ({ id: m.id }));
+}
+
+export function generateMetadata({ params }: Props): Metadata {
+  const mod = getModuleById(decodeURIComponent(params.id));
+  if (!mod) return { title: "模块未找到" };
+  return {
+    title: `${mod.name} - 生理信号处理框架`,
+    description: mod.summary,
+  };
 }
 
 const importanceColors: Record<string, string> = {
@@ -25,7 +44,7 @@ export default function ModuleDetailPage({ params }: Props) {
   const mod = getModuleById(moduleId);
 
   if (!mod) {
-    redirect("/");
+    notFound();
   }
 
   const layer = getLayerById(mod.layer);
@@ -34,7 +53,6 @@ export default function ModuleDetailPage({ params }: Props) {
   const terms = getGlossaryTermsByIds(mod.glossaryTerms);
   const refs = getReferencesByIds(mod.references);
 
-  // Build dependency graph data
   const graphNodes = [
     { id: mod.id, label: mod.name, layer: mod.layer },
     ...depModules.map((d) => ({ id: d.id, label: d.name, layer: d.layer })),
@@ -46,24 +64,31 @@ export default function ModuleDetailPage({ params }: Props) {
     ...feedModules.map((f) => ({ source: mod.id, target: f.id })),
   ];
 
-  // Same-layer modules for related section
   const sameLayerModules = getModulesByLayer(mod.layer).filter(
     (m) => m.id !== mod.id
   );
 
   const impClass = importanceColors[mod.importance] ?? importanceColors.low;
+  const descParagraphs = mod.description.split("\n\n").filter(Boolean);
 
-  const descParagraphs = mod.description
-    .split("\n\n")
-    .filter(Boolean);
+  // Prev/next navigation
+  const allModules = modules;
+  const currentIdx = allModules.findIndex((m) => m.id === mod.id);
+  const prevModule = currentIdx > 0 ? allModules[currentIdx - 1] : null;
+  const nextModule =
+    currentIdx < allModules.length - 1 ? allModules[currentIdx + 1] : null;
 
   return (
     <div className="space-y-10">
-      {/* Breadcrumb */}
       <BreadcrumbNav
         crumbs={[
           { label: "首页", href: "/" },
-          ...(layer ? [{ label: layer.name, href: `/layer/${mod.layer}` }] : []),
+          ...(layer
+            ? [
+                { label: layer.name, href: `/layer/${mod.layer}` },
+                { label: "模块", href: "/module" },
+              ]
+            : []),
           { label: mod.name },
         ]}
       />
@@ -77,10 +102,10 @@ export default function ModuleDetailPage({ params }: Props) {
               className={`rounded-full px-3 py-1 text-xs font-medium ${impClass}`}
             >
               {mod.importance === "high"
-                ? "⭐ 核心"
+                ? "核心"
                 : mod.importance === "medium"
-                ? "📌 重要"
-                : "ℹ️ 辅助"}
+                  ? "重要"
+                  : "辅助"}
             </span>
           )}
           <span className="rounded-full bg-slate-700/50 px-3 py-1 text-xs text-slate-400">
@@ -104,16 +129,14 @@ export default function ModuleDetailPage({ params }: Props) {
 
       {/* Description */}
       <section className="rounded-xl border border-slate-700/50 bg-slate-800/30 p-6">
-        <h2 className="mb-4 text-lg font-semibold text-white">📖 概述</h2>
+        <h2 className="mb-4 text-lg font-semibold text-white">概述</h2>
         <DescriptionRenderer paragraphs={descParagraphs} />
       </section>
 
       {/* Dependency Graph */}
       {graphNodes.length > 1 && (
         <section>
-          <h2 className="mb-4 text-lg font-semibold text-white">
-            🔗 依赖关系图
-          </h2>
+          <h2 className="mb-4 text-lg font-semibold text-white">依赖关系图</h2>
           <DependencyGraph
             nodes={graphNodes}
             edges={graphEdges}
@@ -121,7 +144,7 @@ export default function ModuleDetailPage({ params }: Props) {
             height={350}
           />
           <p className="mt-2 text-xs text-slate-500">
-            悬停查看模块名称 · 点击跳转详情 · 颜色按层级区分
+            滚轮缩放 · 拖拽平移 · 悬停查看 · 点击跳转详情 · 颜色按层级区分
           </p>
         </section>
       )}
@@ -131,7 +154,7 @@ export default function ModuleDetailPage({ params }: Props) {
         {depModules.length > 0 && (
           <section className="rounded-xl border border-slate-700/50 bg-slate-800/30 p-6">
             <h2 className="mb-3 text-lg font-semibold text-white">
-              ⬅️ 依赖（下级输入）
+              依赖（下级输入）
             </h2>
             <ul className="space-y-2">
               {depModules.map((dep) => (
@@ -153,7 +176,7 @@ export default function ModuleDetailPage({ params }: Props) {
         {feedModules.length > 0 && (
           <section className="rounded-xl border border-slate-700/50 bg-slate-800/30 p-6">
             <h2 className="mb-3 text-lg font-semibold text-white">
-              ➡️ 供给（上级输出）
+              供给（上级输出）
             </h2>
             <ul className="space-y-2">
               {feedModules.map((feed) => (
@@ -176,18 +199,14 @@ export default function ModuleDetailPage({ params }: Props) {
 
       {/* Implementations */}
       <section>
-        <h2 className="mb-4 text-xl font-semibold text-white">
-          🛠️ 实现方案
-        </h2>
+        <h2 className="mb-4 text-xl font-semibold text-white">实现方案</h2>
         <ImplementationTabs implementations={mod.implementations} />
       </section>
 
       {/* Glossary Terms */}
       {terms.length > 0 && (
         <section>
-          <h2 className="mb-4 text-xl font-semibold text-white">
-            📚 相关术语
-          </h2>
+          <h2 className="mb-4 text-xl font-semibold text-white">相关术语</h2>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {terms.map((term) => (
               <Link
@@ -203,7 +222,7 @@ export default function ModuleDetailPage({ params }: Props) {
                     {term.category}
                   </span>
                 </div>
-                <p className="mt-1 text-sm text-slate-500 line-clamp-2">
+                <p className="mt-1 line-clamp-2 text-sm text-slate-500">
                   {term.definition}
                 </p>
               </Link>
@@ -223,7 +242,7 @@ export default function ModuleDetailPage({ params }: Props) {
       {sameLayerModules.length > 0 && (
         <section>
           <h2 className="mb-4 text-xl font-semibold text-white">
-            🔍 同层相关模块
+            同层相关模块
           </h2>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {sameLayerModules.slice(0, 6).map((rel) => (
@@ -235,7 +254,7 @@ export default function ModuleDetailPage({ params }: Props) {
                 <div className="text-sm font-medium text-white hover:text-primary-400">
                   {rel.name}
                 </div>
-                <div className="mt-1 text-xs text-slate-500 line-clamp-1">
+                <div className="mt-1 line-clamp-1 text-xs text-slate-500">
                   {rel.summary}
                 </div>
               </Link>
@@ -244,20 +263,38 @@ export default function ModuleDetailPage({ params }: Props) {
         </section>
       )}
 
-      {/* Footer Nav */}
-      <div className="flex items-center justify-between border-t border-slate-700/50 pt-6">
+      {/* Prev / Next Navigation */}
+      <nav
+        className="flex items-center justify-between border-t border-slate-700/50 pt-6"
+        aria-label="模块导航"
+      >
+        <div>
+          {prevModule && (
+            <Link
+              href={`/module/${prevModule.id}`}
+              className="text-sm text-primary-400 hover:text-primary-300"
+            >
+              &larr; {prevModule.name}
+            </Link>
+          )}
+        </div>
         <Link
-          href={layer ? `/layer/${mod.layer}` : "/"}
-          className="text-sm text-primary-400 hover:text-primary-300"
+          href={layer ? `/layer/${mod.layer}` : "/module"}
+          className="text-sm text-slate-500 hover:text-white"
         >
-          &larr; 返回{layer?.name ?? "层级"}
+          返回{layer?.name ?? "模块列表"}
         </Link>
-        <Link href="/" className="text-sm text-slate-500 hover:text-white">
-          首页
-        </Link>
-      </div>
+        <div>
+          {nextModule && (
+            <Link
+              href={`/module/${nextModule.id}`}
+              className="text-sm text-primary-400 hover:text-primary-300"
+            >
+              {nextModule.name} &rarr;
+            </Link>
+          )}
+        </div>
+      </nav>
     </div>
   );
 }
-
-

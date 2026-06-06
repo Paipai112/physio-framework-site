@@ -49,8 +49,3 @@ export const layers: Layer[] = [
 export function getLayerById(id: string): Layer | undefined {
   return layers.find((l) => l.id === id);
 }
-
-export function getLayerColor(id: string): string {
-  const layer = getLayerById(id);
-  return layer?.color ?? "slate";
-}

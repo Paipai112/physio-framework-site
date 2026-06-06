@@ -17,5 +17,5 @@ export function getModulesByLayer(layerId: string): Module[] {
 export function getModulesByIds(ids: string[]): Module[] {
   return ids
     .map((id) => getModuleById(id))
-    .filter(Boolean) as Module[];
+    .filter((m): m is Module => m !== undefined);
 }
