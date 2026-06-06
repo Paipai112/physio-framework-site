@@ -1,0 +1,87 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-bg: #ffffff;
+  --color-bg-secondary: #f8fafc;
+  --color-text: #0f172a;
+  --color-text-secondary: #475569;
+  --color-border: #e2e8f0;
+  --color-primary: #3b82f6;
+  --color-primary-hover: #2563eb;
+  --color-accent: #22c55e;
+  --color-accent-hover: #16a34a;
+  --color-code-bg: #f1f5f9;
+  --color-card-bg: #ffffff;
+  --color-card-border: #e2e8f0;
+  --color-card-shadow: rgba(0, 0, 0, 0.05);
+}
+
+.dark {
+  --color-bg: #0f172a;
+  --color-bg-secondary: #1e293b;
+  --color-text: #f1f5f9;
+  --color-text-secondary: #94a3b8;
+  --color-border: #334155;
+  --color-primary: #60a5fa;
+  --color-primary-hover: #93c5fd;
+  --color-accent: #4ade80;
+  --color-accent-hover: #86efac;
+  --color-code-bg: #1e293b;
+  --color-card-bg: #1e293b;
+  --color-card-border: #334155;
+  --color-card-shadow: rgba(0, 0, 0, 0.2);
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Layer color tokens */
+.layer-l1 {
+  --layer-color: #ef4444;
+}
+.layer-l2 {
+  --layer-color: #f59e0b;
+}
+.layer-l3 {
+  --layer-color: #10b981;
+}
+.layer-l4 {
+  --layer-color: #3b82f6;
+}
+.layer-l5 {
+  --layer-color: #8b5cf6;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bg-secondary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
+}
+
+/* Selection */
+::selection {
+  background-color: var(--color-primary);
+  color: #ffffff;
+}
+
+/* Focus ring utility */
+@layer utilities {
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900;
+  }
+}
