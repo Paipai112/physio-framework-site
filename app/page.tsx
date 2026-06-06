@@ -8,9 +8,9 @@ import { getLayerHex } from "@/data/colors";
 const BENTO_LAYOUT: Record<string, string> = {
   L1: "col-span-1 row-span-1 order-1",
   L2: "col-span-1 row-span-1 order-2",
-  L3: "col-span-1 row-span-2 order-3",
-  L4: "col-span-1 row-span-1 order-4",
-  L5: "col-span-1 row-span-1 order-5",
+  L3: "col-span-1 row-span-1 order-4",
+  L4: "col-span-1 row-span-1 order-5",
+  L5: "col-span-1 row-span-2 order-3",
 };
 
 const LAYER_BG_GLOW: Record<string, string> = {
@@ -192,7 +192,7 @@ export default function HomePage() {
         <div className="grid grid-cols-3 auto-rows-[minmax(180px,auto)] gap-4">
           {visibleLayers.map((layer) => {
             const layerModules = byLayer[layer.id] ?? [];
-            const isFeatured = layer.id === "L3";
+            const isFeatured = layer.id === "L5";
             return (
               <LayerBentoCard
                 key={layer.id}
