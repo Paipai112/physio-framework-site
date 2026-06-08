@@ -39,21 +39,6 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: -0.02em;
 }
 
-.formula {
-  font-family: 'JetBrains Mono', 'Noto Sans SC', monospace;
-  color: #D4D4D4;
-  letter-spacing: 0.02em;
-}
-.formula-block {
-  font-family: 'JetBrains Mono', 'Noto Sans SC', monospace;
-  font-size: 1.0625em;
-  display: block;
-  margin: 0.75em auto;
-  letter-spacing: 0.02em;
-  line-height: 1.6;
-  text-align: center;
-  color: #E5E5E5;
-}
 
 article p, .prose p { color: var(--text-body); }
 
