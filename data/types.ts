@@ -40,6 +40,7 @@ export interface Module {
   implementations: Implementation[];
   glossaryTerms: string[]; // glossary term IDs used in this module
   references: string[]; // reference IDs
+  principles?: string; // optional technical deep-dive (for modules with detailed mechanisms)
 }
 
 export interface GlossaryTerm {

@@ -157,13 +157,29 @@ export default function ModuleDetailPage({ params }: Props) {
         <DescriptionRenderer paragraphs={descParagraphs} />
       </section>
 
-      {/* ───────── 02 Dependency Graph ───────── */}
+      {/* ───────── 02 Principles ───────── */}
+      {mod.principles && (
+        <>
+          <SectionDivider />
+          <section className="rounded-2xl border border-border-subtle bg-surface-elevated p-6">
+            <h2 className="mb-4 font-heading text-xl font-semibold text-text-primary">
+              <span className="mr-2 text-xs font-mono text-text-muted">02</span>
+              原理介绍
+            </h2>
+            <DescriptionRenderer
+              paragraphs={mod.principles.split("\n\n").filter(Boolean)}
+            />
+          </section>
+        </>
+      )}
+
+      {/* ───────── 03 Dependency Graph ───────── */}
       {graphNodes.length > 1 && (
         <>
           <SectionDivider />
           <section className="rounded-2xl border border-border-subtle bg-surface/80 p-6">
             <h2 className="mb-4 font-heading text-xl font-semibold text-text-primary">
-              <span className="mr-2 text-xs font-mono text-text-muted">02</span>
+              <span className="mr-2 text-xs font-mono text-text-muted">03</span>
               依赖关系图
             </h2>
             <DependencyGraph
@@ -179,7 +195,7 @@ export default function ModuleDetailPage({ params }: Props) {
         </>
       )}
 
-      {/* ───────── 03 Dependencies & Feeds ───────── */}
+      {/* ───────── 04 Dependencies & Feeds ───────── */}
       {(depModules.length > 0 || feedModules.length > 0) && (
         <>
           <SectionDivider />
@@ -190,7 +206,7 @@ export default function ModuleDetailPage({ params }: Props) {
                 style={{ borderLeftColor: layerHex }}
               >
                 <h2 className="mb-3 font-heading text-lg font-semibold text-text-primary">
-                  <span className="mr-2 text-xs font-mono text-text-muted">03</span>
+                  <span className="mr-2 text-xs font-mono text-text-muted">04</span>
                   依赖（下级输入）
                 </h2>
                 <ul className="space-y-2">
@@ -216,7 +232,7 @@ export default function ModuleDetailPage({ params }: Props) {
                 style={{ borderLeftColor: layerHex }}
               >
                 <h2 className="mb-3 font-heading text-lg font-semibold text-text-primary">
-                  <span className="mr-2 text-xs font-mono text-text-muted">03</span>
+                  <span className="mr-2 text-xs font-mono text-text-muted">04</span>
                   供给（上级输出）
                 </h2>
                 <ul className="space-y-2">
@@ -240,7 +256,7 @@ export default function ModuleDetailPage({ params }: Props) {
         </>
       )}
 
-      {/* ───────── 04 Implementations ───────── */}
+      {/* ───────── 05 Implementations ───────── */}
       <SectionDivider />
       <section className="relative overflow-hidden rounded-2xl border border-border-subtle bg-surface-elevated p-6">
         {/* Thin gradient accent line at top */}
@@ -251,19 +267,19 @@ export default function ModuleDetailPage({ params }: Props) {
           }}
         />
         <h2 className="mb-4 font-heading text-xl font-semibold text-text-primary">
-          <span className="mr-2 text-xs font-mono text-text-muted">04</span>
+          <span className="mr-2 text-xs font-mono text-text-muted">05</span>
           实现方案
         </h2>
         <ImplementationTabs implementations={mod.implementations} />
       </section>
 
-      {/* ───────── 05 Glossary Terms ───────── */}
+      {/* ───────── 06 Glossary Terms ───────── */}
       {terms.length > 0 && (
         <>
           <SectionDivider />
           <section>
             <h2 className="mb-4 font-heading text-xl font-semibold text-text-primary">
-              <span className="mr-2 text-xs font-mono text-text-muted">05</span>
+              <span className="mr-2 text-xs font-mono text-text-muted">06</span>
               相关术语
             </h2>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -298,13 +314,13 @@ export default function ModuleDetailPage({ params }: Props) {
         </section>
       )}
 
-      {/* ───────── 06 Related Modules ───────── */}
+      {/* ───────── 07 Related Modules ───────── */}
       {sameLayerModules.length > 0 && (
         <>
           <SectionDivider />
           <section className="rounded-2xl border border-border-subtle bg-surface/50 p-6">
             <h2 className="mb-4 font-heading text-xl font-semibold text-text-primary">
-              <span className="mr-2 text-xs font-mono text-text-muted">06</span>
+              <span className="mr-2 text-xs font-mono text-text-muted">07</span>
               同层相关模块
             </h2>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
