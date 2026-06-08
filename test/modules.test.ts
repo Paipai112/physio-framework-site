@@ -2,8 +2,8 @@ import { describe, it, expect } from "vitest";
 import { modules, getModuleById, getModulesByLayer, getModulesByIds } from "@/data/modules";
 
 describe("modules data", () => {
-  it("has 98 modules", () => {
-    expect(modules).toHaveLength(98);
+  it("has 119 modules", () => {
+    expect(modules).toHaveLength(119);
   });
 
   it("all modules have unique IDs", () => {

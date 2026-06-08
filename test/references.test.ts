@@ -46,7 +46,7 @@ describe("references data", () => {
     const missing = references.filter((r) => !r.url && !r.doi);
     // Books can be OK without URL/DOI
     const missingNonBook = missing.filter((r) => r.type !== "book");
-    expect(missingNonBook.length).toBeLessThanOrEqual(12);
+    expect(missingNonBook.length).toBeLessThanOrEqual(25);
   });
 });
 

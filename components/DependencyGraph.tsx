@@ -86,7 +86,7 @@ export default function DependencyGraph({
 
       // Detect trackpad pinch-to-zoom (ctrlKey === true on macOS Safari/Chrome pinch)
       const scaleFactor = e.ctrlKey
-        ? (1 - e.deltaY * 0.005)
+        ? (1 + e.deltaY * 0.005)
         : (e.deltaY > 0 ? 1.15 : 0.85);
 
       setViewBox((vb) => {

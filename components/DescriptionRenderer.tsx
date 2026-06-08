@@ -118,7 +118,7 @@ export default function DescriptionRenderer({
   );
 
   return (
-    <div className="space-y-5 text-text-body leading-relaxed max-w-prose-wide text-[15px]">
+    <div className="space-y-5 text-text-body leading-relaxed text-[15px]">
       {paragraphs.map((p, i) => {
         const standalone = isStandaloneFormula(p);
 
