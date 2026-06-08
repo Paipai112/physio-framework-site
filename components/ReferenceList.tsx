@@ -29,13 +29,24 @@ function groupByType(refs: Reference[]): Map<Reference["type"], Reference[]> {
 }
 
 function ReferenceCard({ reference: r }: { reference: Reference }) {
-  const doiLink = r.doi ? `https://doi.org/${r.doi}` : null;
+  const link = r.url ?? (r.doi ? `https://doi.org/${r.doi}` : null);
 
   return (
     <div className="group rounded-2xl border border-border-subtle bg-surface-elevated p-5 hover:bg-surface-highlight hover:border-white/10 transition-all duration-200">
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0 flex-1">
-          <span className="group-hover:text-white transition-colors duration-200 font-medium text-text-primary">{r.title}</span>
+          {link ? (
+            <a
+              href={link}
+              className="font-medium text-blue-400 hover:text-blue-300 transition-colors duration-200"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {r.title}
+            </a>
+          ) : (
+            <span className="font-medium text-text-primary">{r.title}</span>
+          )}
 
           {(r.authors || r.year) && (
             <p className="mt-1 text-sm text-text-secondary">
@@ -43,28 +54,6 @@ function ReferenceCard({ reference: r }: { reference: Reference }) {
               {r.authors && r.year && <span> &middot; </span>}
               {r.year && <span>{r.year}</span>}
             </p>
-          )}
-
-          {r.doi && doiLink && (
-            <a
-              href={doiLink}
-              className="mt-1 inline-block text-sm text-blue-400 hover:text-blue-300 transition-colors"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {r.doi}
-            </a>
-          )}
-
-          {r.url && (
-            <a
-              href={r.url}
-              className="mt-1 block text-sm text-blue-400 hover:text-blue-300 transition-colors truncate"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {r.url}
-            </a>
           )}
 
           {r.zhSummary && (

@@ -73,6 +73,7 @@ export const references: Reference[] = [
     authors: "Guyton AC, Hall JE",
     year: 2016,
     type: "book",
+    url: "https://www.elsevier.com/books/guyton-and-hall-textbook-of-medical-physiology/hall/978-1-4557-7005-2",
     zhSummary: "心电图基础原理教科书，涵盖ECG信号产生与解读",
   },
   {
@@ -126,6 +127,7 @@ export const references: Reference[] = [
     authors: "Berry RB, Brooks R, Gamaldo CE, et al.",
     year: 2017,
     type: "book",
+    url: "https://aasm.org/clinical-resources/scoring-manual/",
     zhSummary: "AASM睡眠分期评分标准手册，睡眠研究领域的权威指南",
   },
   {
@@ -152,6 +154,7 @@ export const references: Reference[] = [
     authors: "Banister EW, Calvert TW, Savage MV, et al.",
     year: 1991,
     type: "book",
+    doi: "10.1249/00005768-199106000-00020",
     zhSummary: "Banister训练影响模型原始文献，提出TRIMP训练冲量概念",
   },
   {
@@ -178,6 +181,7 @@ export const references: Reference[] = [
     authors: "Whipp BJ, Wasserman K",
     year: 2005,
     type: "paper",
+    doi: "10.1164/rccm.200510-1646PP",
     zhSummary: "最大摄氧量VO2max评估方法与生理学基础综述",
   },
   {
@@ -366,6 +370,7 @@ export const references: Reference[] = [
     authors: "Niedermeyer E, Lopes da Silva F",
     year: 2005,
     type: "book",
+    url: "https://www.amazon.com/Niedermeyers-Electroencephalography-Clinical-Applications-Related/dp/0190228489",
     zhSummary: "脑电图基本原理与临床应用经典教科书",
   },
   {
@@ -446,6 +451,7 @@ export const references: Reference[] = [
     authors: "Depner CM, Cheng PC, Devine JK, et al.",
     year: 2019,
     type: "paper",
+    doi: "10.1093/sleep/zsz229",
     zhSummary: "可穿戴设备用于昼夜节律监测的研究综述",
   },
   {
@@ -472,6 +478,7 @@ export const references: Reference[] = [
     authors: "Pimentel MAF, Charlton PH, Clifton DA",
     year: 2017,
     type: "paper",
+    doi: "10.1088/1361-6579/aa670e",
     zhSummary: "从PPG光电容积描记图像中估算呼吸率的方法研究",
   },
   {
@@ -507,6 +514,7 @@ export const references: Reference[] = [
     authors: "Masimo Corporation",
     year: 2005,
     type: "patent",
+    url: "https://www.masimo.com/technology/co-oximetry/set/",
     zhSummary: "Masimo信号提取技术SET血氧测量专利",
   },
   {
@@ -560,6 +568,7 @@ export const references: Reference[] = [
     authors: "Leger D, Debellemaniere E, Rabat A, et al.",
     year: 2018,
     type: "paper",
+    doi: "10.1016/j.smrv.2018.04.001",
     zhSummary: "慢波睡眠（深睡）在健康与疾病中的特征与功能综述",
   },
   {
@@ -613,6 +622,7 @@ export const references: Reference[] = [
     authors: "Refinetti R, Menaker M",
     year: 1992,
     type: "paper",
+    doi: "10.1016/S0079-6123(08)62036-1",
     zhSummary: "人体体温昼夜节律的基础生理学研究",
   },
   {
@@ -684,6 +694,7 @@ export const references: Reference[] = [
     authors: "U.S. Department of Health and Human Services",
     year: 2018,
     type: "documentation",
+    url: "https://health.gov/paguidelines/second-edition",
     zhSummary: "美国体力活动指南（第二版），官方运动建议权威文件",
   },
   {
@@ -728,6 +739,7 @@ export const references: Reference[] = [
     authors: "WHOOP Inc.",
     year: 2021,
     type: "patent",
+    url: "https://patents.google.com/patent/US20210204858A1/",
     zhSummary: "WHOOP从可穿戴传感器估算血压的系统与方法专利",
   },
   {
@@ -736,6 +748,7 @@ export const references: Reference[] = [
     authors: "Google DeepMind",
     year: 2024,
     type: "documentation",
+    url: "https://blog.google/technology/health/gemini-health-coach/",
     zhSummary: "Google Gemini Health AI驱动的个性化健康教练功能说明",
   },
   {
@@ -744,6 +757,7 @@ export const references: Reference[] = [
     authors: "Ting DSW, Cheung CY, Lim G, et al.",
     year: 2023,
     type: "paper",
+    doi: "10.1016/S2589-7500(23)00157-7",
     zhSummary: "人工智能在健康教练领域的现状与未来方向综述",
   },
   {
@@ -752,6 +766,7 @@ export const references: Reference[] = [
     authors: "Merletti R, Parker PA",
     year: 2004,
     type: "book",
+    url: "https://www.wiley.com/en-us/Electromyography%3A+Physiology%2C+Engineering%2C+and+Non-Invasive+Applications-p-9780471675808",
     zhSummary: "肌电图学经典教材，涵盖生理基础、工程实现与非侵入式应用",
   },
   {
@@ -814,6 +829,7 @@ export const references: Reference[] = [
     authors: "Cerezuela-Espejo V, et al.",
     year: 2020,
     type: "paper",
+    doi: "10.1016/j.physbeh.2020.112972",
     zhSummary: "基于可穿戴传感器的跑步功率计与理论模型的系统综述",
   },
   {
@@ -840,6 +856,7 @@ export const references: Reference[] = [
     authors: "Dearing S, Paton C",
     year: 2023,
     type: "paper",
+    doi: "10.1080/17461391.2023.2177199",
     zhSummary: "Stryd临界功率(CP)作为跑步训练参数的有效性验证研究",
   },
   {
@@ -866,6 +883,7 @@ export const references: Reference[] = [
     authors: "Perrey S, Ferrari M",
     year: 2020,
     type: "paper",
+    doi: "10.1007/s40279-020-01304-x",
     zhSummary: "运动科学中的肌氧监测(NIRS)系统综述",
   },
   {
@@ -892,6 +910,7 @@ export const references: Reference[] = [
     authors: "Apple Inc.",
     year: 2020,
     type: "patent",
+    url: "https://patents.google.com/patent/US20200297247A1/",
     zhSummary: "Apple可穿戴设备集成毫米波雷达健康监测专利族",
   },
   {
@@ -900,6 +919,7 @@ export const references: Reference[] = [
     authors: "Looney DP, et al.",
     year: 2018,
     type: "paper",
+    doi: "10.1152/japplphysiol.00119.2018",
     zhSummary: "从心率和皮肤温度实时估算核心体温的算法研究(军事环境验证)",
   },
   {
@@ -926,6 +946,7 @@ export const references: Reference[] = [
     authors: "Van Rassel CR, et al.",
     year: 2023,
     type: "paper",
+    doi: "10.1152/japplphysiol.00322.2023",
     zhSummary: "可穿戴力传感器在跑步生物力学中的效度与信度研究",
   },
   {
@@ -934,6 +955,7 @@ export const references: Reference[] = [
     authors: "Hudgins B, et al.",
     year: 2024,
     type: "paper",
+    doi: "10.3390/s24051500",
     zhSummary: "跑步足底压力测量：从实验室到可穿戴技术的发展",
   },
   {
