@@ -50,10 +50,10 @@ function TypeBadge({ type }: { type: "commercial" | "research" }) {
 
 function SectionDivider() {
   return (
-    <div className="flex items-center gap-3 my-2">
-      <div className="h-px flex-1 bg-border-subtle" />
-      <span className="text-xs text-text-muted font-mono">· · ·</span>
-      <div className="h-px flex-1 bg-border-subtle" />
+    <div className="flex items-center gap-4 my-1">
+      <div className="h-px flex-1 bg-white/10" />
+      <span className="text-[10px] text-text-muted tracking-widest font-mono">···</span>
+      <div className="h-px flex-1 bg-white/10" />
     </div>
   );
 }
@@ -79,7 +79,7 @@ export default function FrontierDetailPage({ params }: Props) {
       : null;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       <BreadcrumbNav
         crumbs={[
           { label: "首页", href: "/" },
@@ -142,15 +142,12 @@ export default function FrontierDetailPage({ params }: Props) {
       </div>
 
       {/* ───────── 01 课题详述 ───────── */}
-      <section
-        className="rounded-2xl border border-border-subtle bg-surface-elevated border-l-2 p-6 pl-5"
-        style={{ borderLeftColor: layerHex }}
-      >
+      <section className="border-l-2 pl-5" style={{ borderLeftColor: layerHex }}>
         <h2 className="mb-4 font-heading text-xl font-semibold text-text-primary">
           <span className="mr-2 text-xs font-mono text-text-muted">01</span>
           课题详述
         </h2>
-        <div className="space-y-4 text-text-body leading-relaxed">
+        <div className="space-y-4 text-text-body leading-relaxed text-base">
           {descParagraphs.map((para, idx) => (
             <p key={idx}>{para}</p>
           ))}

@@ -75,7 +75,7 @@ export default function GlossaryDetailPage({ params }: Props) {
         <h2 className="font-heading text-lg font-semibold text-text-primary mb-3">
           定义
         </h2>
-        <p className="text-text-body leading-relaxed text-[15px]">
+        <p className="text-text-body leading-relaxed text-base">
           {term.definition}
         </p>
       </div>

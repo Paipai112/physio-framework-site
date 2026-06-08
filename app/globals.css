@@ -42,25 +42,18 @@ h1, h2, h3, h4, h5, h6 {
 .formula {
   font-family: 'JetBrains Mono', 'Noto Sans SC', monospace;
   font-size: 0.875em;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 4px;
-  padding: 0.1em 0.35em;
+  color: #D4D4D4;
   letter-spacing: 0.02em;
-  white-space: nowrap;
 }
 .formula-block {
   font-family: 'JetBrains Mono', 'Noto Sans SC', monospace;
   font-size: 0.9375em;
   display: block;
-  background: rgba(255, 255, 255, 0.03);
-  padding: 0.75em 1em;
   margin: 0.75em auto;
-  border-radius: 8px;
   letter-spacing: 0.02em;
   line-height: 1.6;
   text-align: center;
-  max-width: max-content;
+  color: #E5E5E5;
 }
 
 article p, .prose p { color: var(--text-body); }
