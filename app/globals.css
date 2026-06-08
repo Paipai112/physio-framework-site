@@ -41,13 +41,12 @@ h1, h2, h3, h4, h5, h6 {
 
 .formula {
   font-family: 'JetBrains Mono', 'Noto Sans SC', monospace;
-  font-size: 0.875em;
   color: #D4D4D4;
   letter-spacing: 0.02em;
 }
 .formula-block {
   font-family: 'JetBrains Mono', 'Noto Sans SC', monospace;
-  font-size: 0.9375em;
+  font-size: 1.0625em;
   display: block;
   margin: 0.75em auto;
   letter-spacing: 0.02em;

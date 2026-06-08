@@ -33,31 +33,44 @@ const GREEK_LETTERS = "αβγδεζηθικλμνξπρστυφχψωΔΣΩ√";
 const MATH_OPERATORS = /sqrt\(|mean\(|std\(|min\(|max\(|log\(|exp\(/;
 const DIMENSIONAL_UNITS = /\b(kHz|MHz|GHz|μV|mV|V|mA|μA|nA|kΩ|MΩ|mW|μg|mg|g|kg|mL|W|kg|nm|mm|cm|m|s|ms|μs|hr|min|bpm|Hz|dB)\b/;
 const MATH_NOTATION = /[=≈≠±≤≥×·÷∑∫]/;
-const MATH_OPERATOR_CHARS = /[+\-*/^(){}[\]]/;
 
 const FORMULA_TOKENS_REGEX = new RegExp(
   `[${GREEK_LETTERS.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}]|` +
   MATH_OPERATORS.source + "|" +
   DIMENSIONAL_UNITS.source + "|" +
-  MATH_NOTATION.source + "|" +
-  MATH_OPERATOR_CHARS.source
+  MATH_NOTATION.source
 );
+
+/**
+ * Characters considered "formula-like": Latin letters, digits, Greek,
+ * math symbols, brackets, whitespace, dot, comma, underscore.
+ */
+const FORMULA_CHAR = /[a-zA-Z0-9αβγδεζηθικλμνξπρστυφχψωΔΣΩ√+\-*/^=≈≠±≤≥×·÷∑∫(){}[\].,_\s]/g;
 
 function isFormula(text: string): boolean {
   const trimmed = text.trim();
   if (!trimmed) return false;
-  return FORMULA_TOKENS_REGEX.test(trimmed);
+
+  // Must contain at least one formula indicator token
+  if (!FORMULA_TOKENS_REGEX.test(trimmed)) return false;
+
+  // Require ≥60% formula-like characters to avoid false positives
+  // on Chinese text that happens to contain a stray × / ± / = / ≈
+  const formulaCount = (trimmed.match(FORMULA_CHAR) || []).length;
+  const ratio = formulaCount / trimmed.length;
+  // Require ≥6 characters — short tokens like "=", "×", "mm", "Hz)"
+  // are almost never standalone formulas worth centering
+  if (trimmed.length < 6) return false;
+
+  return ratio >= 0.7;
 }
 
 /**
- * Given a raw text segment (no citation markers, no terms linked yet),
- * split it into alternating [text, formula, text, formula...] spans.
- * Odd indices are formula spans.
+ * Split raw text by whitespace boundaries into alternating formula/non-formula tokens,
+ * then merge adjacent tokens of the same type into blocks.
  */
-function splitFormulaSegments(text: string): { value: string; isFormula: boolean }[] {
-  const segments: { value: string; isFormula: boolean }[] = [];
-
-  // Tokenize on whitespace boundaries while preserving delimiters
+function splitFormulaBlocks(text: string): { value: string; isFormula: boolean }[] {
+  const blocks: { value: string; isFormula: boolean }[] = [];
   const tokens = text.split(/(\s+)/g);
 
   let currentText = "";
@@ -72,36 +85,21 @@ function splitFormulaSegments(text: string): { value: string; isFormula: boolean
     } else if (tokenIsFormula === currentIsFormula) {
       currentText += token;
     } else {
-      // Transition: flush current and start new
-      segments.push({ value: currentText, isFormula: currentIsFormula });
+      blocks.push({ value: currentText, isFormula: currentIsFormula });
       currentIsFormula = tokenIsFormula;
       currentText = token;
     }
   }
 
   if (currentText) {
-    segments.push({ value: currentText, isFormula: currentIsFormula! });
+    blocks.push({ value: currentText, isFormula: currentIsFormula! });
   }
 
-  return segments;
+  return blocks;
 }
 
 const matchList = buildMatches();
 const CITATION_RE = /\[(ref-[a-z0-9-]+)\]/g;
-
-/**
- * Determines if a paragraph is a standalone formula (entirely formula content,
- * possibly with some punctuation/spacing). Used to choose block vs inline wrapping.
- */
-function isStandaloneFormula(rawText: string): boolean {
-  // Strip citation markers and trim
-  const cleaned = rawText.replace(CITATION_RE, "").trim();
-  if (!cleaned) return false;
-  // If every non-space token is a formula segment, treat as standalone
-  const tokens = cleaned.split(/\s+/).filter(Boolean);
-  if (tokens.length === 0) return false;
-  return tokens.every((t) => isFormula(t));
-}
 
 export default function DescriptionRenderer({
   paragraphs,
@@ -117,66 +115,76 @@ export default function DescriptionRenderer({
     [pattern]
   );
 
+  /**
+   * Renders text content with term links and citation markers.
+   * Pure text helper — no formula detection (formulas are split out before calling this).
+   */
+  function renderText(text: string, keyPrefix: string): React.ReactNode {
+    const citeSegments = text.split(CITATION_RE);
+
+    return citeSegments.map((seg, j) => {
+      // Odd indices are citation IDs
+      if (j % 2 === 1) {
+        return <CitationMarker key={`${keyPrefix}-c-${j}`} citationIds={[seg]} />;
+      }
+
+      if (!termRegex) {
+        return <span key={`${keyPrefix}-s-${j}`}>{seg}</span>;
+      }
+
+      const parts = seg.split(termRegex);
+      return parts.map((part, k) => {
+        const found = matchList.find((m) => m.name === part);
+        if (found) {
+          return (
+            <TermLink key={`${keyPrefix}-t-${j}-${k}`} termId={found.id} display={part} />
+          );
+        }
+        return <span key={`${keyPrefix}-tx-${j}-${k}`}>{part}</span>;
+      });
+    });
+  }
+
   return (
     <div className="space-y-4 text-text-body leading-relaxed text-base">
       {paragraphs.map((p, i) => {
-        const standalone = isStandaloneFormula(p);
+        const blocks = splitFormulaBlocks(p);
 
-        // First, split by citation markers
-        const citeSegments = p.split(CITATION_RE);
+        // All blocks are text → simple <p>
+        if (blocks.every((b) => !b.isFormula)) {
+          return <p key={i}>{renderText(p, `p${i}`)}</p>;
+        }
 
-        // Determine if this paragraph should be wrapped in a formula block
-        const Wrapper = standalone
-          ? ({ children }: { children: React.ReactNode }) => (
-              <span className="formula-block">{children}</span>
-            )
-          : ({ children }: { children: React.ReactNode }) => <>{children}</>;
+        // All blocks are formula → single centered <div>
+        if (blocks.every((b) => b.isFormula)) {
+          const cleaned = p.replace(CITATION_RE, "").trim();
+          return (
+            <div key={i} className="formula-block">
+              {cleaned}
+            </div>
+          );
+        }
 
+        // Mixed: text blocks → <p>, formula blocks → centered <div>
         return (
-          <p key={i}>
-            <Wrapper>
-              {citeSegments.map((seg, j) => {
-                // Odd indices are citation IDs
-                if (j % 2 === 1) {
-                  return (
-                    <CitationMarker key={j} citationIds={[seg]} />
-                  );
-                }
-                // Even indices are regular text — apply formula splitting + term linking
-                if (!termRegex) {
-                  // No terms to link — just apply formula detection
-                  return splitFormulaSegments(seg).map((fs, k) =>
-                    fs.isFormula ? (
-                      <span key={k} className="formula">{fs.value}</span>
-                    ) : (
-                      <span key={k}>{fs.value}</span>
-                    )
-                  );
-                }
-
-                // First split by term matches
-                const parts = seg.split(termRegex);
-
-                return parts.map((part, k) => {
-                  const found = matchList.find((m) => m.name === part);
-                  if (found) {
-                    // TermLink — no formula detection inside linked terms
-                    return (
-                      <TermLink key={`${j}-${k}`} termId={found.id} display={part} />
-                    );
-                  }
-                  // Non-term text — apply formula detection
-                  return splitFormulaSegments(part).map((fs, fi) =>
-                    fs.isFormula ? (
-                      <span key={`${j}-${k}-${fi}`} className="formula">{fs.value}</span>
-                    ) : (
-                      <span key={`${j}-${k}-${fi}`}>{fs.value}</span>
-                    )
-                  );
-                });
-              })}
-            </Wrapper>
-          </p>
+          <div key={i} className="space-y-4">
+            {blocks.map((block, bi) => {
+              if (block.isFormula) {
+                return (
+                  <div key={`${i}-fb-${bi}`} className="formula-block">
+                    {block.value.trim()}
+                  </div>
+                );
+              }
+              const trimmed = block.value.trim();
+              if (!trimmed) return null;
+              return (
+                <p key={`${i}-t-${bi}`}>
+                  {renderText(block.value, `p${i}b${bi}`)}
+                </p>
+              );
+            })}
+          </div>
         );
       })}
     </div>

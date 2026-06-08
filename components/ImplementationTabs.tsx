@@ -107,7 +107,7 @@ export default function ImplementationTabs({ implementations }: Props) {
         </p>
 
         {/* Description */}
-        <p className="text-text-body text-[15px] mb-5 leading-relaxed">
+        <p className="text-text-body text-base mb-5 leading-relaxed">
           {active.description}
         </p>
 
