@@ -60,14 +60,20 @@ export default function ModuleDetailPage({ params }: Props) {
   }
 
   const layer = getLayerById(mod.layer);
-  const depModules = getModulesByIds(mod.dependsOn);
-  const feedModules = getModulesByIds(mod.feedsInto);
   const terms = getGlossaryTermsByIds(mod.glossaryTerms);
   const refs = getReferencesByIds(mod.references);
 
   const subgraph = getModuleSubgraph(mod.id);
   const graphNodes = subgraph.nodes;
   const graphEdges = subgraph.edges;
+
+  // Derive dep/feed lists from the subgraph (single source of truth) so they
+  // match the dependency graph exactly — handles data gaps where dependsOn
+  // and feedsInto are not perfectly symmetric.
+  const depModuleIds = Array.from(new Set(subgraph.edges.filter(e => e.source === mod.id).map(e => e.target)));
+  const feedModuleIds = Array.from(new Set(subgraph.edges.filter(e => e.target === mod.id).map(e => e.source)));
+  const depModules = getModulesByIds(depModuleIds);
+  const feedModules = getModulesByIds(feedModuleIds);
 
   const sameLayerModules = getModulesByLayer(mod.layer).filter(
     (m) => m.id !== mod.id

@@ -141,6 +141,14 @@ export function getModuleSubgraph(moduleId: string): {
     ...center.feedsInto,
   ]);
 
+  // Also find modules that reference this one — handles data inconsistency
+  // where A.dependsOn lists B but B.feedsInto doesn't list A (or vice versa).
+  for (const mod of modules) {
+    if (mod.dependsOn.includes(moduleId) || mod.feedsInto.includes(moduleId)) {
+      neighborIds.add(mod.id);
+    }
+  }
+
   const { nodes: allNodes, edges: allEdges } = buildFullDependencyGraph();
 
   const nodes: DepNode[] = allNodes.filter((n) => neighborIds.has(n.id));

@@ -205,7 +205,11 @@ export default function DependencyGraph({
           const isHovered = hoveredNode === node.id;
 
           return (
-            <g key={node.id}>
+            <g
+              key={node.id}
+              onMouseEnter={() => setHoveredNode(node.id)}
+              onMouseLeave={() => setHoveredNode(null)}
+            >
               <a href={`/module/${node.id}`}>
                 <circle
                   cx={pos.x}
@@ -216,8 +220,6 @@ export default function DependencyGraph({
                   strokeWidth={isHovered ? 2.5 : 0}
                   filter={isHovered ? "url(#node-shadow)" : undefined}
                   className="cursor-pointer transition-all duration-200"
-                  onMouseEnter={() => setHoveredNode(node.id)}
-                  onMouseLeave={() => setHoveredNode(null)}
                 />
                 <rect
                   x={pos.x - labelWidth / 2}
