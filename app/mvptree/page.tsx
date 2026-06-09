@@ -3,7 +3,7 @@
 import MVPTreeGraph from '@/components/MVPTreeGraph';
 import {
   mvpNodes,
-  mvpEdges,
+  getMvpEdges,
   buildPhases,
   getMvpNodesByLayer,
   type MvpNode,
@@ -229,7 +229,7 @@ export default function MVPTreePage() {
   };
 
   /* ---- Derived data ---- */
-  const componentEdges = useMemo(() => toComponentEdges(mvpEdges), []);
+  const componentEdges = useMemo(() => toComponentEdges(getMvpEdges()), []);
 
   const layersWithNodes = useMemo(
     () =>

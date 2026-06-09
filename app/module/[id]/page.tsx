@@ -9,6 +9,7 @@ import {
 import { getLayerById } from "@/data/layers";
 import { getGlossaryTermsByIds } from "@/data/glossary";
 import { getReferencesByIds } from "@/data/references";
+import { getModuleSubgraph } from "@/data/dependency-graph";
 import type { Metadata } from "next";
 import BreadcrumbNav from "@/components/BreadcrumbNav";
 import DependencyGraph from "@/components/DependencyGraph";
@@ -64,16 +65,9 @@ export default function ModuleDetailPage({ params }: Props) {
   const terms = getGlossaryTermsByIds(mod.glossaryTerms);
   const refs = getReferencesByIds(mod.references);
 
-  const graphNodes = [
-    { id: mod.id, label: mod.name, layer: mod.layer },
-    ...depModules.map((d) => ({ id: d.id, label: d.name, layer: d.layer })),
-    ...feedModules.map((f) => ({ id: f.id, label: f.name, layer: f.layer })),
-  ];
-
-  const graphEdges = [
-    ...depModules.map((d) => ({ source: d.id, target: mod.id })),
-    ...feedModules.map((f) => ({ source: mod.id, target: f.id })),
-  ];
+  const subgraph = getModuleSubgraph(mod.id);
+  const graphNodes = subgraph.nodes;
+  const graphEdges = subgraph.edges;
 
   const sameLayerModules = getModulesByLayer(mod.layer).filter(
     (m) => m.id !== mod.id

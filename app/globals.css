@@ -109,6 +109,16 @@ p, li, span, a {
   50% { box-shadow: 0 0 12px rgba(96, 165, 250, 0.15); }
 }
 
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
 /* ===== Utilities ===== */
 @layer utilities {
   .glass {
@@ -143,4 +153,10 @@ p, li, span, a {
   .max-w-prose-wide { max-width: 85ch; }
   .interactive-glow { transition: box-shadow 300ms ease-out; }
   .interactive-glow:hover { box-shadow: 0 0 20px rgba(96, 165, 250, 0.12); }
+
+  .shadow-card-hover { box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.06); }
+  .shadow-glow { box-shadow: 0 0 20px rgba(96, 165, 250, 0.12), 0 0 4px rgba(96, 165, 250, 0.08); }
+
+  .animate-slide-up { animation: slide-up 200ms ease-out both; }
+  .animate-scale-in { animation: scale-in 150ms ease-out both; }
 }

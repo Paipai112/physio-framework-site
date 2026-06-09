@@ -6,6 +6,8 @@
  * progressing from sensor integration through AI-powered coaching.
  */
 
+import { getEdgesForModules } from './dependency-graph';
+
 // ---------------------------------------------------------------------------
 // Interfaces
 // ---------------------------------------------------------------------------
@@ -349,4 +351,14 @@ export function getMvpNodesByLayer(layerId: string): MvpNode[] {
  */
 export function getMvpNodeById(id: string): MvpNode | undefined {
   return mvpNodes.find((node) => node.id === id);
+}
+
+/**
+ * Derive MVP edges from the full module dependency graph (single source of truth).
+ * Changing module dependencies in modules-data.ts automatically propagates here.
+ */
+export function getMvpEdges(): MvpEdge[] {
+  const mvpIds = mvpNodes.map(function(n) { return n.id; });
+  const allEdges = getEdgesForModules(mvpIds);
+  return allEdges.map(function(e) { return { from: e.source, to: e.target }; });
 }

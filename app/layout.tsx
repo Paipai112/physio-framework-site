@@ -16,6 +16,7 @@ const navLinks = [
   { href: "/", label: "首页" },
   { href: "/layer", label: "层级" },
   { href: "/module", label: "模块" },
+  { href: "/panorama", label: "全景地图" },
   { href: "/glossary", label: "术语" },
   { href: "/references", label: "文献" },
   { href: "/mvptree", label: "MVP树" },
