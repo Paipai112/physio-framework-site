@@ -147,7 +147,7 @@ function LayerAccordionCard({
                 className="group block rounded-xl border border-border-subtle bg-surface p-4 transition-all duration-200 hover:border-white/10 hover:bg-surface-hover"
               >
                 {/* Module name */}
-                <div className="font-heading text-sm font-semibold text-text-primary transition-colors group-hover:text-white">
+                <div className="font-heading text-base font-semibold text-text-primary transition-colors group-hover:text-white">
                   {node.name}
                 </div>
 
@@ -166,7 +166,7 @@ function LayerAccordionCard({
                 </div>
 
                 {/* whyMVP text */}
-                <p className="mt-2 text-xs leading-relaxed text-text-secondary line-clamp-2">
+                <p className="mt-2 text-sm leading-relaxed text-text-secondary line-clamp-2">
                   {node.whyMVP}
                 </p>
 

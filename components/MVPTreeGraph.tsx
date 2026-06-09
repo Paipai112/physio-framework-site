@@ -29,6 +29,7 @@ const NODE_HEIGHT = 48;
 const LAYER_SPACING = 130;
 const PADDING_X = 80;
 const START_Y = 60;
+const ARROWHEAD_SIZE = 10;
 
 const LAYERS = ['L1', 'L2', 'L3', 'L4', 'L5'];
 
@@ -74,43 +75,12 @@ function MVPTreeGraph({ nodes, edges, width, height }: MVPTreeGraphProps) {
     const connected = new Set<string>();
     connected.add(hoveredNodeId);
 
-    const edgeMap = new Map<string, Set<string>>();
-    const reverseEdgeMap = new Map<string, Set<string>>();
-
     for (const edge of edges) {
-      if (!edgeMap.has(edge.source)) {
-        edgeMap.set(edge.source, new Set());
+      if (edge.source === hoveredNodeId) {
+        connected.add(edge.target);
       }
-      edgeMap.get(edge.source)!.add(edge.target);
-
-      if (!reverseEdgeMap.has(edge.target)) {
-        reverseEdgeMap.set(edge.target, new Set());
-      }
-      reverseEdgeMap.get(edge.target)!.add(edge.source);
-    }
-
-    const queue = [hoveredNodeId];
-    for (let i = 0; i < queue.length; i++) {
-      const current = queue[i];
-
-      const downstream = edgeMap.get(current);
-      if (downstream) {
-        downstream.forEach((target) => {
-          if (!connected.has(target)) {
-            connected.add(target);
-            queue.push(target);
-          }
-        });
-      }
-
-      const upstream = reverseEdgeMap.get(current);
-      if (upstream) {
-        upstream.forEach((source) => {
-          if (!connected.has(source)) {
-            connected.add(source);
-            queue.push(source);
-          }
-        });
+      if (edge.target === hoveredNodeId) {
+        connected.add(edge.source);
       }
     }
 
@@ -157,14 +127,14 @@ function MVPTreeGraph({ nodes, edges, width, height }: MVPTreeGraphProps) {
       <defs>
         <marker
           id="arrowhead"
-          markerWidth="8"
-          markerHeight="6"
-          refX="8"
-          refY="3"
+          markerWidth="10"
+          markerHeight="8"
+          refX="10"
+          refY="4"
           orient="auto"
           markerUnits="userSpaceOnUse"
         >
-          <polygon points="0 0, 8 3, 0 6" fill="#333" />
+          <polygon points="0 0, 10 4, 0 8" fill="#555" />
         </marker>
       </defs>
 
@@ -208,20 +178,29 @@ function MVPTreeGraph({ nodes, edges, width, height }: MVPTreeGraphProps) {
           return null;
         }
 
-        const offsetX = (dx / dist) * (NODE_HEIGHT / 2);
-        const offsetY = (dy / dist) * (NODE_HEIGHT / 2);
+        // Unit vector from source to target
+        const ux = dx / dist;
+        const uy = dy / dist;
 
-        const x1 = sourcePos.x;
+        // Source: line exits from bottom of source node, clipped to its horizontal bounds
+        const halfW = NODE_WIDTH / 2;
+        const x1 = sourcePos.x + ux * Math.min(NODE_HEIGHT / 2, Math.abs(uy) > 0.001 ? (NODE_HEIGHT / 2) * (ux / uy) : halfW);
         const y1 = sourcePos.y + NODE_HEIGHT / 2;
-        const x2 = targetPos.x;
+
+        // Target: line enters top of target node, minus arrowhead clearance
+        const arrowClear = 12;
+        const x2 = targetPos.x - ux * (NODE_HEIGHT / 2 + arrowClear);
         const y2 = targetPos.y - NODE_HEIGHT / 2;
+
+        // Clamp x1/x2 to stay within node horizontal bounds
+        const clamp = (val: number, cx: number) => Math.max(cx - halfW + 6, Math.min(cx + halfW - 6, val));
 
         return (
           <line
             key={edgeKey}
-            x1={x1}
+            x1={clamp(x1, sourcePos.x)}
             y1={y1}
-            x2={x2}
+            x2={clamp(x2, targetPos.x)}
             y2={y2}
             stroke={strokeColor}
             strokeWidth={strokeWidth}
