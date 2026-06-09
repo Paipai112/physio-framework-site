@@ -114,13 +114,17 @@ export function getDependencyNeighbors(moduleId: string): {
   };
 }
 
+const MAX_SUBGRAPH_NODES = 40;
+
 /**
  * Build a subgraph centered on a single module.
  *
  * Includes:
  * - The center module itself
- * - All modules it depends on
- * - All modules that depend on (are fed by) it
+ * - All modules it depends on (1-hop neighbors)
+ * - All modules that depend on it (1-hop neighbors)
+ * - One additional hop from every 1-hop neighbor, capped at
+ *   MAX_SUBGRAPH_NODES to keep the visualization readable
  *
  * Only edges where BOTH endpoints belong to the resulting node set are
  * included.
@@ -135,26 +139,37 @@ export function getModuleSubgraph(moduleId: string): {
     return { nodes: [], edges: [] };
   }
 
-  const neighborIds = new Set([
+  // 1-hop: center + direct neighbors
+  const oneHop = new Set([
     moduleId,
     ...center.dependsOn,
     ...center.feedsInto,
   ]);
 
-  // Also find modules that reference this one — handles data inconsistency
-  // where A.dependsOn lists B but B.feedsInto doesn't list A (or vice versa).
+  // Handle data inconsistency: modules that reference the center but aren't
+  // listed in the center's dependsOn/feedsInto.
   for (const mod of modules) {
     if (mod.dependsOn.includes(moduleId) || mod.feedsInto.includes(moduleId)) {
-      neighborIds.add(mod.id);
+      oneHop.add(mod.id);
     }
   }
 
   const { nodes: allNodes, edges: allEdges } = buildFullDependencyGraph();
 
+  // 2-hop: expand one more degree from every 1-hop neighbor (capped)
+  const twoHop = new Set(oneHop);
+  for (const edge of allEdges) {
+    if (oneHop.has(edge.source)) twoHop.add(edge.target);
+    if (oneHop.has(edge.target)) twoHop.add(edge.source);
+  }
+
+  const useTwoHop = twoHop.size <= MAX_SUBGRAPH_NODES;
+  const neighborIds = useTwoHop ? twoHop : oneHop;
+
   const nodes: DepNode[] = allNodes.filter((n) => neighborIds.has(n.id));
 
   const edges: DepEdge[] = allEdges.filter(
-    (e) => neighborIds.has(e.source) && neighborIds.has(e.target)
+    (e) => neighborIds.has(e.source) && neighborIds.has(e.target),
   );
 
   return { nodes, edges };

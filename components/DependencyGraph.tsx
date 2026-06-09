@@ -37,6 +37,7 @@ export default function DependencyGraph({
   height = 400,
 }: Props) {
   const svgRef = useRef<SVGSVGElement>(null);
+  const hoverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
   const [viewBox, setViewBox] = useState({ x: 0, y: 0, w: width, h: height });
   const [isPanning, setIsPanning] = useState(false);
@@ -72,6 +73,18 @@ export default function DependencyGraph({
     return result;
   }, [nodes, width, height]);
 
+  // Compute the set of node IDs that are directly connected by an edge to the hovered node.
+  // These nodes get a "related" highlight so users can see which nodes the glowing edges lead to.
+  const connectedNodeIds = useMemo(() => {
+    if (!hoveredNode) return new Set<string>();
+    const connected = new Set<string>();
+    edges.forEach((edge) => {
+      if (edge.source === hoveredNode) connected.add(edge.target);
+      if (edge.target === hoveredNode) connected.add(edge.source);
+    });
+    return connected;
+  }, [hoveredNode, edges]);
+
   // Non-passive wheel listener for scroll lock + pinch-to-zoom detection
   useEffect(() => {
     const el = svgRef.current;
@@ -81,13 +94,13 @@ export default function DependencyGraph({
       e.preventDefault();
       e.stopPropagation();
 
-      // Horizontal swipe on trackpad — skip so the page can still pan horizontally when desired
       if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
 
-      // Detect trackpad pinch-to-zoom (ctrlKey === true on macOS Safari/Chrome pinch)
       const scaleFactor = e.ctrlKey
-        ? (1 + e.deltaY * 0.005)
-        : (e.deltaY > 0 ? 1.15 : 0.85);
+        ? 1 + e.deltaY * 0.005
+        : e.deltaY > 0
+          ? 1.15
+          : 0.85;
 
       setViewBox((vb) => {
         const newW = vb.w * scaleFactor;
@@ -107,13 +120,32 @@ export default function DependencyGraph({
     return () => el.removeEventListener("wheel", handler);
   }, [viewBox.w, viewBox.h, width, height]);
 
+  // Cleanup hover timer on unmount
+  useEffect(() => {
+    return () => {
+      if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
+    };
+  }, []);
+
+  // Debounced hover handlers — a brief delay on leave prevents flicker when
+  // the cursor moves between adjacent nodes, since the next node's enter will
+  // cancel the pending leave timeout before it fires.
+  const handleNodeEnter = useCallback((nodeId: string) => {
+    if (hoverTimerRef.current) {
+      clearTimeout(hoverTimerRef.current);
+      hoverTimerRef.current = null;
+    }
+    setHoveredNode(nodeId);
+  }, []);
+
+  const handleNodeLeave = useCallback(() => {
+    hoverTimerRef.current = setTimeout(() => {
+      setHoveredNode(null);
+    }, 80);
+  }, []);
+
   const getEdgeColor = useCallback(
     (isActive: boolean) => (isActive ? "#60A5FA" : "#2A2A2A"),
-    [],
-  );
-
-  const getNodeLabelColor = useCallback(
-    (isHovered: boolean) => (isHovered ? "#FAFAFA" : "#A3A3A3"),
     [],
   );
 
@@ -167,11 +199,17 @@ export default function DependencyGraph({
             <feGaussianBlur in="SourceGraphic" stdDeviation="2" />
           </filter>
           <filter id="node-shadow" x="-50%" y="-50%" width="200%" height="200%">
-            <feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="#FFFFFF" floodOpacity="0.25" />
+            <feDropShadow
+              dx="0"
+              dy="0"
+              stdDeviation="3"
+              floodColor="#FFFFFF"
+              floodOpacity="0.25"
+            />
           </filter>
         </defs>
 
-        {/* Edges */}
+        {/* Edges — highlight when either endpoint is the hovered node */}
         {edges.map((edge, i) => {
           const source = positions[edge.source];
           const target = positions[edge.target];
@@ -188,7 +226,7 @@ export default function DependencyGraph({
               stroke={getEdgeColor(isActive)}
               strokeWidth={isActive ? 2 : 1}
               filter={isActive ? "url(#edge-glow)" : undefined}
-              className="transition-all duration-300"
+              className="transition-all duration-150"
             />
           );
         })}
@@ -203,23 +241,60 @@ export default function DependencyGraph({
           const labelWidth = Math.min(labelLen * 7.5 + 18, 150);
           const labelHeight = 22;
           const isHovered = hoveredNode === node.id;
+          const isConnected = connectedNodeIds.has(node.id);
+
+          // Visual state precedence: hovered > connected > idle
+          const labelFill = isHovered
+            ? "#1A1A1A"
+            : isConnected
+              ? "#252525"
+              : "#1A1A1A";
+          const labelStroke = isHovered
+            ? `rgba(${r}, ${g}, ${b}, 0.9)`
+            : isConnected
+              ? `rgba(${r}, ${g}, ${b}, 0.5)`
+              : `rgba(${r}, ${g}, ${b}, 0.25)`;
+          const textFill = isHovered
+            ? "#FAFAFA"
+            : isConnected
+              ? "#D4D4D4"
+              : "#A3A3A3";
+          const circleStroke = isHovered
+            ? "#FFFFFF"
+            : isConnected
+              ? `rgba(${r}, ${g}, ${b}, 0.7)`
+              : "none";
+          const circleStrokeWidth = isHovered ? 2.5 : isConnected ? 1.5 : 0;
 
           return (
             <g
               key={node.id}
-              onMouseEnter={() => setHoveredNode(node.id)}
-              onMouseLeave={() => setHoveredNode(null)}
+              onMouseEnter={() => handleNodeEnter(node.id)}
+              onMouseLeave={handleNodeLeave}
+              className="cursor-pointer"
             >
               <a href={`/module/${node.id}`}>
+                {/* Invisible hit-area rect — covers the full node (circle +
+                    label) so there are no gaps that cause spurious
+                    mouseleave events when moving between elements. */}
+                <rect
+                  x={pos.x - labelWidth / 2 - 4}
+                  y={pos.y - labelHeight - 16 - 4}
+                  width={labelWidth + 8}
+                  height={labelHeight + 16 + 8 + 4}
+                  rx={10}
+                  fill="transparent"
+                  stroke="none"
+                />
                 <circle
                   cx={pos.x}
                   cy={pos.y}
                   r={8}
                   fill={color}
-                  stroke={isHovered ? "#FFFFFF" : "none"}
-                  strokeWidth={isHovered ? 2.5 : 0}
+                  stroke={circleStroke}
+                  strokeWidth={circleStrokeWidth}
                   filter={isHovered ? "url(#node-shadow)" : undefined}
-                  className="cursor-pointer transition-all duration-200"
+                  className="transition-all duration-150"
                 />
                 <rect
                   x={pos.x - labelWidth / 2}
@@ -227,20 +302,20 @@ export default function DependencyGraph({
                   width={labelWidth}
                   height={labelHeight}
                   rx={8}
-                  fill="#1A1A1A"
-                  stroke={`rgba(${r}, ${g}, ${b}, 0.5)`}
+                  fill={labelFill}
+                  stroke={labelStroke}
                   strokeWidth={1}
-                  className="transition-all duration-200"
+                  className="transition-all duration-150"
                 />
                 <text
                   x={pos.x}
                   y={pos.y - labelHeight / 2 - 16 + 0.5}
                   textAnchor="middle"
                   dominantBaseline="middle"
-                  fill={getNodeLabelColor(isHovered)}
+                  fill={textFill}
                   fontSize="12"
                   fontFamily="DM Sans, Noto Sans SC, sans-serif"
-                  className="pointer-events-none transition-all duration-200"
+                  className="pointer-events-none transition-all duration-150"
                 >
                   {node.label}
                 </text>
