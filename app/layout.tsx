@@ -18,6 +18,7 @@ const navLinks = [
   { href: "/module", label: "模块" },
   { href: "/glossary", label: "术语" },
   { href: "/references", label: "文献" },
+  { href: "/mvptree", label: "MVP树" },
   { href: "/frontier", label: "前沿" },
 ];
 

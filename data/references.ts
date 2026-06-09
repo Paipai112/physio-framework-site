@@ -985,6 +985,24 @@ export const references: Reference[] = [
     url: "https://support.apple.com/en-us/HT213263",
     zhSummary: "Apple Watch温度传感用于排卵估算与健康洞察的技术说明",
   },
+  {
+    id: "ref-verily-study-watch",
+    title: "Verily Study Watch: An FDA 510(k)-Cleared Multi-Sensor Wearable for Clinical Research",
+    authors: "Verily Life Sciences (Alphabet/Google)",
+    year: 2021,
+    type: "documentation",
+    url: "https://verily.com/solutions/study-watch/",
+    zhSummary: "Google/Alphabet旗下Verily开发的FDA 510(k)认证多传感器研究级穿戴设备，用于Project Baseline和All of Us等大规模临床研究",
+  },
+  {
+    id: "ref-project-baseline",
+    title: "Project Baseline: A multicenter study to define human health and disease",
+    authors: "Ariniello L, Megill C, Mega JL, et al.",
+    year: 2019,
+    type: "paper",
+    doi: "10.1038/s41746-019-0103-4",
+    zhSummary: "Google/Verily/Stanford/Duke联合发起的Project Baseline万人健康队列研究方案，使用Study Watch采集多维度生理信号",
+  },
 ];
 
 export function getReferenceById(id: string): Reference | undefined {
