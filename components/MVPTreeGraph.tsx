@@ -29,7 +29,6 @@ const NODE_HEIGHT = 48;
 const LAYER_SPACING = 130;
 const PADDING_X = 80;
 const START_Y = 60;
-const ARROWHEAD_SIZE = 10;
 
 const LAYERS = ['L1', 'L2', 'L3', 'L4', 'L5'];
 
@@ -37,6 +36,7 @@ function MVPTreeGraph({ nodes, edges, width, height }: MVPTreeGraphProps) {
   const router = useRouter();
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
 
+  /* ---- Layout: layered top-down --------------------------------- */
   const nodePositionMap = useMemo<Map<string, { x: number; y: number }>>(() => {
     const map = new Map<string, { x: number; y: number }>();
 
@@ -44,9 +44,7 @@ function MVPTreeGraph({ nodes, edges, width, height }: MVPTreeGraphProps) {
       const layerId = LAYERS[i];
       const layerNodes = nodes.filter((n) => n.layer === layerId);
 
-      if (layerNodes.length === 0) {
-        continue;
-      }
+      if (layerNodes.length === 0) continue;
 
       const y = START_Y + i * LAYER_SPACING;
 
@@ -59,42 +57,37 @@ function MVPTreeGraph({ nodes, edges, width, height }: MVPTreeGraphProps) {
       const step = usableWidth / (layerNodes.length - 1);
 
       for (let j = 0; j < layerNodes.length; j++) {
-        const x = PADDING_X + j * step;
-        map.set(layerNodes[j].id, { x, y });
+        map.set(layerNodes[j].id, { x: PADDING_X + j * step, y });
       }
     }
 
     return map;
   }, [nodes, width]);
 
+  /* ---- 1-hop connected set for hover highlighting ----------------- */
   const connectedNodeIds = useMemo<Set<string>>(() => {
-    if (!hoveredNodeId) {
-      return new Set();
-    }
+    if (!hoveredNodeId) return new Set();
 
     const connected = new Set<string>();
     connected.add(hoveredNodeId);
 
     for (const edge of edges) {
-      if (edge.source === hoveredNodeId) {
-        connected.add(edge.target);
-      }
-      if (edge.target === hoveredNodeId) {
-        connected.add(edge.source);
-      }
+      if (edge.source === hoveredNodeId) connected.add(edge.target);
+      if (edge.target === hoveredNodeId) connected.add(edge.source);
     }
 
     return connected;
   }, [hoveredNodeId, edges]);
 
   const connectedEdgeIds = useMemo<Set<string>>(() => {
-    if (!hoveredNodeId) {
-      return new Set();
-    }
+    if (!hoveredNodeId) return new Set();
 
     const connected = new Set<string>();
     for (const edge of edges) {
-      if (connectedNodeIds.has(edge.source) && connectedNodeIds.has(edge.target)) {
+      if (
+        connectedNodeIds.has(edge.source) &&
+        connectedNodeIds.has(edge.target)
+      ) {
         connected.add(`${edge.source}->${edge.target}`);
       }
     }
@@ -124,121 +117,87 @@ function MVPTreeGraph({ nodes, edges, width, height }: MVPTreeGraphProps) {
       preserveAspectRatio="xMidYMid meet"
       style={{ width: '100%', height: '100%' }}
     >
+      {/* Arrowhead marker — uses context-stroke so it inherits the line colour */}
       <defs>
         <marker
-          id="arrowhead"
-          markerWidth="10"
-          markerHeight="8"
-          refX="10"
-          refY="4"
+          id="arrow"
+          markerWidth="8"
+          markerHeight="6"
+          refX="8"
+          refY="3"
           orient="auto"
           markerUnits="userSpaceOnUse"
         >
-          <polygon points="0 0, 10 4, 0 8" fill="#555" />
+          <polygon points="0 0, 8 3, 0 6" fill="context-stroke" />
         </marker>
       </defs>
 
+      {/* ---- Edges ------------------------------------------------- */}
       {edges.map((edge) => {
-        const sourcePos = nodePositionMap.get(edge.source);
-        const targetPos = nodePositionMap.get(edge.target);
-
-        if (!sourcePos || !targetPos) {
-          return null;
-        }
+        const src = nodePositionMap.get(edge.source);
+        const tgt = nodePositionMap.get(edge.target);
+        if (!src || !tgt) return null;
 
         const edgeKey = `${edge.source}->${edge.target}`;
         const isEdgeConnected =
           !isDimmed || connectedEdgeIds.has(edgeKey);
-        const isEdgeDirect =
-          isDimmed &&
-          (edge.source === hoveredNodeId || edge.target === hoveredNodeId);
 
         const sourceColor = getLayerHex(
           nodes.find((n) => n.id === edge.source)?.layer ?? '',
         );
 
-        let strokeColor = '#333';
-        let strokeWidth = 1.5;
-        let opacity = 1;
+        let strokeColor = '#555';
+        let strokeWidth = 1.2;
+        let op = 1;
 
         if (isDimmed) {
           if (isEdgeConnected) {
             strokeColor = sourceColor;
-            strokeWidth = isEdgeDirect ? 2.5 : 2;
+            strokeWidth = 2;
           } else {
-            opacity = 0.05;
+            op = 0.04;
           }
         }
 
-        const dx = targetPos.x - sourcePos.x;
-        const dy = targetPos.y - sourcePos.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-
-        if (dist === 0) {
-          return null;
-        }
-
-        // Unit vector from source to target
-        const ux = dx / dist;
-        const uy = dy / dist;
-
-        // Source: line exits from bottom of source node, clipped to its horizontal bounds
-        const halfW = NODE_WIDTH / 2;
-        const x1 = sourcePos.x + ux * Math.min(NODE_HEIGHT / 2, Math.abs(uy) > 0.001 ? (NODE_HEIGHT / 2) * (ux / uy) : halfW);
-        const y1 = sourcePos.y + NODE_HEIGHT / 2;
-
-        // Target: line enters top of target node, minus arrowhead clearance
-        const arrowClear = 12;
-        const x2 = targetPos.x - ux * (NODE_HEIGHT / 2 + arrowClear);
-        const y2 = targetPos.y - NODE_HEIGHT / 2;
-
-        // Clamp x1/x2 to stay within node horizontal bounds
-        const clamp = (val: number, cx: number) => Math.max(cx - halfW + 6, Math.min(cx + halfW - 6, val));
+        // Simple centre-to-centre: exit bottom of source, enter top of target
+        const x1 = src.x;
+        const y1 = src.y + NODE_HEIGHT / 2;
+        const x2 = tgt.x;
+        const y2 = tgt.y - NODE_HEIGHT / 2;
 
         return (
           <line
             key={edgeKey}
-            x1={clamp(x1, sourcePos.x)}
+            x1={x1}
             y1={y1}
-            x2={clamp(x2, targetPos.x)}
+            x2={x2}
             y2={y2}
             stroke={strokeColor}
             strokeWidth={strokeWidth}
-            opacity={opacity}
-            markerEnd="url(#arrowhead)"
-            style={{ transition: 'opacity 200ms ease, stroke 200ms ease, stroke-width 200ms ease' }}
+            opacity={op}
+            markerEnd="url(#arrow)"
+            style={{
+              transition:
+                'opacity 200ms ease, stroke 200ms ease, stroke-width 200ms ease',
+            }}
           />
         );
       })}
 
+      {/* ---- Nodes ------------------------------------------------- */}
       {nodes.map((node) => {
         const pos = nodePositionMap.get(node.id);
-        if (!pos) {
-          return null;
-        }
+        if (!pos) return null;
 
         const layerColor = getLayerHex(node.layer);
         const isConnected = !isDimmed || connectedNodeIds.has(node.id);
         const isHovered = hoveredNodeId === node.id;
-        const isDirectlyConnected =
-          isDimmed &&
-          !isHovered &&
-          (edges.some(
-            (e) =>
-              (e.source === hoveredNodeId && e.target === node.id) ||
-              (e.target === hoveredNodeId && e.source === node.id),
-          ) ||
-            connectedNodeIds.has(node.id));
 
-        const opacity = isDimmed && !isConnected ? 0.15 : 1;
-        const rectStrokeOpacity = isHovered
-          ? 1
-          : isDirectlyConnected
-            ? 0.8
-            : 0.4;
-        const rectStrokeWidth = isHovered ? 2 : 1;
-        const glowFilter = isHovered
-          ? `drop-shadow(0 0 8px ${layerColor}40)`
+        const nodeOpacity = isDimmed && !isConnected ? 0.12 : 1;
+        const strokeOp = isHovered ? 1 : isConnected && isDimmed ? 0.75 : 0.4;
+        const strokeW = isHovered ? 2 : 1;
+        const glow = isHovered
+          ? `drop-shadow(0 0 8px ${layerColor}50)`
           : 'none';
 
         return (
@@ -250,24 +209,27 @@ function MVPTreeGraph({ nodes, edges, width, height }: MVPTreeGraphProps) {
             onClick={() => handleClick(node.id)}
             style={{
               cursor: 'pointer',
-              opacity,
+              opacity: nodeOpacity,
               transition: 'opacity 200ms ease',
-              filter: glowFilter,
+              filter: glow,
             }}
           >
             <rect
               width={NODE_WIDTH}
               height={NODE_HEIGHT}
               rx={8}
-              fill="rgba(10, 10, 10, 0.9)"
+              fill="rgba(10, 10, 10, 0.92)"
               stroke={layerColor}
-              strokeWidth={rectStrokeWidth}
-              strokeOpacity={rectStrokeOpacity}
-              style={{ transition: 'stroke 200ms ease, stroke-opacity 200ms ease, stroke-width 200ms ease' }}
+              strokeWidth={strokeW}
+              strokeOpacity={strokeOp}
+              style={{
+                transition:
+                  'stroke 200ms ease, stroke-opacity 200ms ease, stroke-width 200ms ease',
+              }}
             />
             <text
               x={NODE_WIDTH / 2}
-              y={22}
+              y={21}
               textAnchor="middle"
               fill="#FAFAFA"
               fontSize={12}
@@ -285,29 +247,33 @@ function MVPTreeGraph({ nodes, edges, width, height }: MVPTreeGraphProps) {
               {node.keyMetric}
             </text>
 
+            {/* ---- Tooltip on hover ------------------------------- */}
             {isHovered && (
-              <g transform={`translate(${NODE_WIDTH + 8}, ${NODE_HEIGHT / 2})`}>
+              <g
+                transform={`translate(${NODE_WIDTH + 10}, ${-NODE_HEIGHT / 2})`}
+              >
                 <rect
                   x={0}
-                  y={-18}
-                  width={220}
-                  height={36}
-                  rx={4}
-                  fill="rgba(24, 24, 27, 0.95)"
+                  y={0}
+                  width={260}
+                  height={52}
+                  rx={6}
+                  fill="rgba(18, 18, 18, 0.97)"
                   stroke={layerColor}
                   strokeWidth={1}
-                  strokeOpacity={0.6}
+                  strokeOpacity={0.5}
                 />
                 <text
-                  x={8}
-                  y={-4}
+                  x={12}
+                  y={20}
                   fill="#D4D4D8"
-                  fontSize={10}
-                  style={{ whiteSpace: 'pre-wrap' }}
+                  fontSize={13}
+                  fontWeight={500}
                 >
-                  {node.whyMVP.length > 40
-                    ? `${node.whyMVP.slice(0, 40)}...`
-                    : node.whyMVP}
+                  {node.name}
+                </text>
+                <text x={12} y={40} fill="#A3A3A3" fontSize={12}>
+                  {node.whyMVP}
                 </text>
               </g>
             )}
