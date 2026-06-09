@@ -250,34 +250,46 @@ function MVPTreeGraph({ nodes, edges, width, height }: MVPTreeGraphProps) {
             </text>
 
             {/* ---- Tooltip on hover ------------------------------- */}
-            {isHovered && (
-              <foreignObject
-                x={NODE_WIDTH + 10}
-                y={-16}
-                width={270}
-                height={70}
-              >
-                <div
-                  style={{
-                    background: 'rgba(18, 18, 18, 0.97)',
-                    border: `1px solid ${layerColor}80`,
-                    borderRadius: '8px',
-                    padding: '10px 12px',
-                    color: '#D4D4D8',
-                    fontSize: '13px',
-                    fontWeight: 500,
-                    lineHeight: '1.5',
-                    wordBreak: 'break-word',
-                    whiteSpace: 'normal',
-                  }}
+            {isHovered && (() => {
+              const TOOLTIP_W = 270;
+              const TOOLTIP_H = 70;
+              const GAP = 10;
+              // Place right of node by default; flip left if it'd overflow viewport
+              const rightEdge = pos.x + NODE_WIDTH / 2 + GAP + TOOLTIP_W;
+              const tipX = rightEdge > width
+                ? -NODE_WIDTH / 2 - GAP - TOOLTIP_W
+                : NODE_WIDTH / 2 + GAP;
+              const tipY = -16;
+
+              return (
+                <foreignObject
+                  x={tipX}
+                  y={tipY}
+                  width={TOOLTIP_W}
+                  height={TOOLTIP_H}
                 >
-                  <div style={{ marginBottom: '4px' }}>{node.name}</div>
-                  <div style={{ color: '#A3A3A3', fontSize: '12px', fontWeight: 400 }}>
-                    {node.whyMVP}
+                  <div
+                    style={{
+                      background: 'rgba(18, 18, 18, 0.97)',
+                      border: `1px solid ${layerColor}80`,
+                      borderRadius: '8px',
+                      padding: '10px 12px',
+                      color: '#D4D4D8',
+                      fontSize: '13px',
+                      fontWeight: 500,
+                      lineHeight: '1.5',
+                      wordBreak: 'break-word',
+                      whiteSpace: 'normal',
+                    }}
+                  >
+                    <div style={{ marginBottom: '4px' }}>{node.name}</div>
+                    <div style={{ color: '#A3A3A3', fontSize: '12px', fontWeight: 400 }}>
+                      {node.whyMVP}
+                    </div>
                   </div>
-                </div>
-              </foreignObject>
-            )}
+                </foreignObject>
+              );
+            })()}
           </g>
         );
       })}
