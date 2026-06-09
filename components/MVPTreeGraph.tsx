@@ -159,11 +159,13 @@ function MVPTreeGraph({ nodes, edges, width, height }: MVPTreeGraphProps) {
           }
         }
 
-        // Simple centre-to-centre: exit bottom of source, enter top of target
+        // Source bottom centre → target top centre
+        // Nodes are drawn with rect at local (0,0), translated to (pos.x - W/2, pos.y)
+        // so in world coords: top = pos.y,  bottom = pos.y + NODE_HEIGHT
         const x1 = src.x;
-        const y1 = src.y + NODE_HEIGHT / 2;
+        const y1 = src.y + NODE_HEIGHT;   // bottom of source
         const x2 = tgt.x;
-        const y2 = tgt.y - NODE_HEIGHT / 2;
+        const y2 = tgt.y;                  // top of target
 
         return (
           <line
@@ -249,33 +251,32 @@ function MVPTreeGraph({ nodes, edges, width, height }: MVPTreeGraphProps) {
 
             {/* ---- Tooltip on hover ------------------------------- */}
             {isHovered && (
-              <g
-                transform={`translate(${NODE_WIDTH + 10}, ${-NODE_HEIGHT / 2})`}
+              <foreignObject
+                x={NODE_WIDTH + 10}
+                y={-16}
+                width={270}
+                height={70}
               >
-                <rect
-                  x={0}
-                  y={0}
-                  width={260}
-                  height={52}
-                  rx={6}
-                  fill="rgba(18, 18, 18, 0.97)"
-                  stroke={layerColor}
-                  strokeWidth={1}
-                  strokeOpacity={0.5}
-                />
-                <text
-                  x={12}
-                  y={20}
-                  fill="#D4D4D8"
-                  fontSize={13}
-                  fontWeight={500}
+                <div
+                  style={{
+                    background: 'rgba(18, 18, 18, 0.97)',
+                    border: `1px solid ${layerColor}80`,
+                    borderRadius: '8px',
+                    padding: '10px 12px',
+                    color: '#D4D4D8',
+                    fontSize: '13px',
+                    fontWeight: 500,
+                    lineHeight: '1.5',
+                    wordBreak: 'break-word',
+                    whiteSpace: 'normal',
+                  }}
                 >
-                  {node.name}
-                </text>
-                <text x={12} y={40} fill="#A3A3A3" fontSize={12}>
-                  {node.whyMVP}
-                </text>
-              </g>
+                  <div style={{ marginBottom: '4px' }}>{node.name}</div>
+                  <div style={{ color: '#A3A3A3', fontSize: '12px', fontWeight: 400 }}>
+                    {node.whyMVP}
+                  </div>
+                </div>
+              </foreignObject>
             )}
           </g>
         );
